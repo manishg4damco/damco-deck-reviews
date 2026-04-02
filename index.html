@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Decision Intelligence Agent — IKK Group | Damco Solutions</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --maroon: #94122C;
+    --maroon-light: #b01535;
+    --orange: #FF9408;
+    --beige: #FBEEDB;
+    --dark: #1A1A1A;
+    --grey: #F5F5F5;
+    --white: #FFFFFF;
+    --text-muted: #555555;
+    --border: #E0E0E0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--dark);
+    background: var(--white);
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 52px;
+    border-bottom: 2px solid var(--maroon);
+  }
+
+  nav .nav-brand {
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  nav .nav-brand span {
+    color: var(--orange);
+  }
+
+  nav .nav-dots {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  nav .nav-dots a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 11px;
+    transition: color 0.2s;
+    padding: 4px 2px;
+  }
+
+  nav .nav-dots a:hover {
+    color: var(--orange);
+  }
+
+  nav .nav-dots a .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  nav .nav-dots a:hover .dot {
+    background: var(--orange);
+  }
+
+  /* SLIDES */
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px 60px;
+    position: relative;
+  }
+
+  .slide-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* SLIDE 1: COVER */
+  #s1 {
+    background: var(--maroon);
+    color: var(--white);
+    align-items: center;
+    text-align: center;
+  }
+
+  #s1 .cover-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 28px;
+  }
+
+  #s1 h1 {
+    font-size: clamp(36px, 5vw, 62px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    color: var(--white);
+  }
+
+  #s1 .cover-subtitle {
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 400;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 52px;
+    letter-spacing: 0.5px;
+  }
+
+  #s1 .cover-meta {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  #s1 .cover-meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  #s1 .cover-meta-item .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  #s1 .cover-meta-item .value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  #s1 .cover-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--orange);
+    margin: 0 auto 52px;
+  }
+
+  /* SLIDE HEADERS */
+  .slide-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .slide-title {
+    font-size: clamp(24px, 3.5vw, 42px);
+    font-weight: 800;
+    color: var(--maroon);
+    margin-bottom: 48px;
+    line-height: 1.15;
+  }
+
+  /* CARDS */
+  .cards-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .cards-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 32px rgba(148, 18, 44, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .card .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--beige);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    font-size: 20px;
+  }
+
+  .card .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--maroon);
+    margin-bottom: 8px;
+  }
+
+  .card .card-body {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .card.accent {
+    border-color: var(--maroon);
+    border-width: 2px;
+  }
+
+  .card.accent .card-icon {
+    background: var(--maroon);
+    color: var(--white);
+  }
+
+  /* STATEMENT */
+  .statement {
+    background: var(--maroon);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 24px 32px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* GREY SLIDE */
+  .slide-grey {
+    background: var(--grey);
+  }
+
+  /* BEIGE SLIDE */
+  .slide-beige {
+    background: var(--beige);
+  }
+
+  /* SLIDE 4: ARCHITECTURE */
+  .arch-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .arch-caption {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 640px;
+  }
+
+  /* SLIDE 5: HYBRID */
+  .split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .split-col h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--maroon);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 4px solid var(--orange);
+    background: var(--beige);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--dark);
+    margin-top: 24px;
+  }
+
+  .callout strong {
+    color: var(--maroon);
+  }
+
+  /* ACCORDION-STYLE ANSWERS */
+  .qa-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .qa-card .qa-q {
+    background: var(--maroon);
+    color: var(--white);
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .qa-card .qa-a {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .qa-card .qa-a strong {
+    color: var(--dark);
+  }
+
+  /* HARDWARE */
+  .hw-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+
+  .hw-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+  }
+
+  .hw-card.recommended {
+    border-color: var(--maroon);
+  }
+
+  .hw-card-header {
+    padding: 18px 22px;
+    background: var(--grey);
+  }
+
+  .hw-card.recommended .hw-card-header {
+    background: var(--maroon);
+    color: var(--white);
+  }
+
+  .hw-card-header .hw-name {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .hw-card-header .hw-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .hw-card.recommended .hw-card-header .hw-tag {
+    color: var(--orange);
+    opacity: 1;
+  }
+
+  .hw-card-body {
+    padding: 18px 22px;
+    background: var(--white);
+  }
+
+  .hw-spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--grey);
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  .hw-spec-row:last-child { border-bottom: none; }
+
+  .hw-spec-row .spec-label {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    min-width: 100px;
+  }
+
+  .hw-spec-row .spec-value {
+    color: var(--dark);
+    font-weight: 500;
+    text-align: right;
+  }
+
+  /* PHASES */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+  }
+
+  .phases::before {
+    content: '';
+    position: absolute;
+    top: 52px;
+    left: calc(16.66% + 16px);
+    right: calc(16.66% + 16px);
+    height: 3px;
+    background: linear-gradient(to right, var(--maroon), var(--orange));
+    z-index: 0;
+  }
+
+  .phase-card {
+    background: var(--white);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px 20px;
+    margin: 0 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phase-card.active {
+    border-color: var(--maroon);
+  }
+
+  .phase-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    margin: 0 auto 16px;
+    background: var(--grey);
+    color: var(--text-muted);
+    border: 2px solid var(--border);
+  }
+
+  .phase-card.active .phase-badge {
+    background: var(--maroon);
+    color: var(--white);
+    border-color: var(--maroon);
+  }
+
+  .phase-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--maroon);
+    text-align: center;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .phase-items {
+    list-style: none;
+    padding: 0;
+  }
+
+  .phase-items li {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--grey);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.4;
+  }
+
+  .phase-items li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+
+  .phase-items li:last-child { border-bottom: none; }
+
+  .phase-tag {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: var(--beige);
+    color: var(--maroon);
+    text-transform: uppercase;
+  }
+
+  /* CREDENTIALS */
+  .cred-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 28px;
+  }
+
+  .cred-col h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--maroon);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--orange);
+  }
+
+  .cred-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .cred-col ul li {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 7px 0 7px 18px;
+    position: relative;
+    border-bottom: 1px solid var(--grey);
+    line-height: 1.5;
+  }
+
+  .cred-col ul li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--maroon);
+    font-weight: 700;
+  }
+
+  .cred-col ul li:last-child { border-bottom: none; }
+
+  /* SLIDE 11: NEXT STEP */
+  #s11 {
+    background: var(--maroon);
+    color: var(--white);
+    text-align: center;
+  }
+
+  #s11 .slide-title {
+    color: var(--white);
+  }
+
+  #s11 .ns-body {
+    max-width: 700px;
+    margin: 0 auto 40px;
+    font-size: 18px;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.7;
+  }
+
+  #s11 .ns-body p + p {
+    margin-top: 20px;
+  }
+
+  #s11 .contact-block {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    padding: 28px 40px;
+    display: inline-block;
+    text-align: left;
+    min-width: 340px;
+  }
+
+  #s11 .contact-block .contact-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+
+  #s11 .contact-block .contact-row {
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 6px;
+  }
+
+  #s11 .contact-block .contact-row span {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-green {
+    background: #E8F5E9;
+    color: #2E7D32;
+  }
+
+  .badge-orange {
+    background: #FFF3E0;
+    color: #E65100;
+  }
+
+  /* TABLE */
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .styled-table th {
+    background: var(--maroon);
+    color: var(--white);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .styled-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--dark);
+  }
+
+  .styled-table tr:nth-child(even) td {
+    background: var(--beige);
+  }
+
+  /* PRICE HIGHLIGHT */
+  .price-highlight {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--maroon);
+  }
+
+  /* SLIDE NUMBER */
+  .slide-number {
+    position: absolute;
+    bottom: 28px;
+    right: 48px;
+    font-size: 11px;
+    color: var(--border);
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .slide { padding: 80px 24px 48px; }
+    .cards-3, .cards-2x2, .hw-cards, .phases, .split-layout, .cred-cols {
+      grid-template-columns: 1fr;
+    }
+    .phases::before { display: none; }
+    nav .nav-dots { display: none; }
+  }
+
+  /* Q&A DETAIL AND TABLE */
+  .qa-detail {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .qa-table {
+    margin: 10px 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+
+  .qt-row {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr;
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .qt-row:last-child { border-bottom: none; }
+
+  .qt-header {
+    background: var(--maroon);
+    color: white;
+    font-weight: 600;
+  }
+
+  .qt-row:not(.qt-header) {
+    background: white;
+  }
+
+  .qt-row:not(.qt-header):nth-child(even) {
+    background: var(--beige);
+  }
+
+  /* USE CASE GRID */
+  .uc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .uc-module {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .uc-header {
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 12px;
+    line-height: 1.4;
+  }
+
+  .uc-list {
+    list-style: none;
+    padding: 10px 12px;
+    background: white;
+  }
+
+  .uc-list li {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--grey);
+    line-height: 1.4;
+  }
+
+  .uc-list li:last-child { border-bottom: none; }
+
+  .uc-list li::before {
+    content: '\203A  ';
+    color: var(--maroon);
+    font-weight: 700;
+  }
+
+  /* HARDWARE EXTENDED */
+  .hw-card.future {
+    border: 2px solid var(--orange);
+  }
+
+  .hw-card.future .hw-card-header {
+    background: linear-gradient(135deg, #94122C, #B85C00);
+  }
+
+  /* PHASE SECTION LABELS AND SUCCESS CRITERIA */
+  .phase-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--maroon);
+    margin: 8px 0 4px;
+  }
+
+  .phase-items.success li::before {
+    content: '\2713  ';
+    color: #2E7D32;
+    font-weight: 700;
+    position: static;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    top: auto;
+    left: auto;
+  }
+
+  .phase-items.success li {
+    color: #1A3A1A;
+    padding-left: 0;
+  }
+
+  /* PDF EXPORT BUTTON */
+  .pdf-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 999;
+    background: var(--maroon);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(148,18,44,0.35);
+    letter-spacing: 0.3px;
+    transition: background 0.2s;
+  }
+
+  .pdf-btn:hover {
+    background: var(--maroon-light);
+  }
+
+  /* PRINT */
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    html, body {
+      width: 297mm;
+      height: 210mm;
+      margin: 0;
+      padding: 0;
+      background: white;
+    }
+
+    nav { display: none !important; }
+    .pdf-btn { display: none !important; }
+    .slide-number { display: none !important; }
+
+    .slide {
+      width: 297mm;
+      height: 210mm;
+      min-height: unset;
+      max-height: 210mm;
+      display: block;
+      page-break-after: always;
+      page-break-inside: avoid;
+      overflow: hidden;
+      padding: 32px 44px 28px;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .slide:last-of-type { page-break-after: auto; }
+
+    .slide-inner {
+      max-width: 100%;
+      zoom: 0.85;
+    }
+
+    /* Cover slide — keep centered */
+    #s1 .slide-inner {
+      zoom: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 180mm;
+    }
+
+    /* Content-heavy slides — compress more */
+    #s6 .slide-inner,
+    #s8 .slide-inner,
+    #s9 .slide-inner { zoom: 0.72; }
+
+    /* Architecture and boundary slides — SVGs need space */
+    #s4 .slide-inner,
+    #s5 .slide-inner { zoom: 0.65; }
+
+    /* Use cases — 4 column grid needs compression */
+    #s7 .slide-inner { zoom: 0.70; }
+
+    svg { max-width: 100%; height: auto; }
+
+    .phases {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+    }
+
+    .phase-card { flex: 1; }
+
+    /* Reduce heading sizes in print */
+    .slide-title { font-size: 22px !important; margin-bottom: 12px !important; }
+    .slide-label { font-size: 10px !important; margin-bottom: 4px !important; }
+
+    /* Cards layout */
+    .cards-2x2 { gap: 12px; }
+    .qa-card { padding: 14px; }
+    .hw-cards { gap: 12px; }
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-brand">Damco Solutions &nbsp;|&nbsp; <span>IKK Group AI Agent</span></div>
+  <div class="nav-dots">
+    <a href="#s1"><span class="dot"></span>Cover</a>
+    <a href="#s2"><span class="dot"></span>Challenge</a>
+    <a href="#s3"><span class="dot"></span>Approach</a>
+    <a href="#s4"><span class="dot"></span>Architecture</a>
+    <a href="#s5"><span class="dot"></span>Boundary</a>
+    <a href="#s6"><span class="dot"></span>Q&amp;A</a>
+    <a href="#s7"><span class="dot"></span>Use Cases</a>
+    <a href="#s8"><span class="dot"></span>Hardware</a>
+    <a href="#s9"><span class="dot"></span>Phases</a>
+    <a href="#s10"><span class="dot"></span>Credentials</a>
+    <a href="#s11"><span class="dot"></span>Next Step</a>
+  </div>
+</nav>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide" id="s1">
+  <div class="slide-inner">
+    <div class="cover-eyebrow">Damco's Response &mdash; April 2026</div>
+    <h1>AI Decision Intelligence Agent</h1>
+    <div class="cover-subtitle">Dynamics 365 F&amp;O &mdash; Damco's Response</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <span class="label">Client</span>
+        <span class="value">IKK Group</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">From</span>
+        <span class="value">Damco Solutions</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">Date</span>
+        <span class="value">April 2026</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="label">Version</span>
+        <span class="value">1.0</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">01 / 11</div>
+</section>
+
+<!-- SLIDE 2: THE CHALLENGE -->
+<section class="slide slide-grey" id="s2">
+  <div class="slide-inner">
+    <div class="slide-label">Context</div>
+    <div class="slide-title">The Challenge</div>
+    <div class="cards-3">
+      <div class="card accent">
+        <div class="card-icon">&#9201;</div>
+        <div class="card-title">24&#8211;48 Hour Wait</div>
+        <div class="card-body">Executives wait for analysts to extract and format ERP data. By the time the answer arrives, the context has changed.</div>
+      </div>
+      <div class="card accent">
+        <div class="card-icon">&#9783;</div>
+        <div class="card-title">No Group View</div>
+        <div class="card-body">40+ entities, no consolidated visibility without manual aggregation. Each subsidiary is a separate legal entity in D365.</div>
+      </div>
+      <div class="card accent">
+        <div class="card-icon">&#128274;</div>
+        <div class="card-title">Sovereignty First</div>
+        <div class="card-body">No ERP data can leave IKK's private network. A hard governance requirement consistent with SAMA and NCA frameworks.</div>
+      </div>
+    </div>
+    <div class="statement">
+      D365 has the data. The gap is between the data and the decision-maker.
+    </div>
+  </div>
+  <div class="slide-number">02 / 11</div>
+</section>
+
+<!-- SLIDE 3: OUR APPROACH -->
+<section class="slide" id="s3">
+  <div class="slide-inner">
+    <div class="slide-label">Design Principles</div>
+    <div class="slide-title">Our Approach</div>
+    <div class="cards-2x2">
+      <div class="card">
+        <div class="card-icon" style="background:var(--maroon);color:var(--white)">&#128274;</div>
+        <div class="card-title">Sovereign by Design</div>
+        <div class="card-body">LLM runs on IKK hardware. No data leaves the network during standard operation. Sovereignty is enforced architecturally, not through policy or configuration.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:var(--maroon);color:var(--white)">&#9881;</div>
+        <div class="card-title">D365-Native</div>
+        <div class="card-body">Built on Microsoft's supported OData and BYOD mechanisms. Semantic layer built specifically for IKK's schema, chart of accounts, and multi-entity configuration.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:var(--maroon);color:var(--white)">&#128172;</div>
+        <div class="card-title">Open-Ended Queries</div>
+        <div class="card-body">No fixed question list. Any financial or operational question, in English or Arabic. The architecture places no ceiling on query variety.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:var(--maroon);color:var(--white)">&#10003;</div>
+        <div class="card-title">Proven Before Committed</div>
+        <div class="card-body">POC on IKK's own data and infrastructure before Phase 1 is approved. Omar and the CIO evaluate a working system on real data. POC cost credited against Phase 1.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">03 / 11</div>
+</section>
+
+<!-- SLIDE 4: SOLUTION ARCHITECTURE -->
+<section class="slide slide-grey" id="s4">
+  <div class="slide-inner">
+    <div class="slide-label">Technical Architecture</div>
+    <div class="slide-title">Six On-Premises Layers</div>
+    <div class="arch-wrapper">
+      <!-- SVG DIAGRAM 1 -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 830" width="700" style="max-width:100%;height:auto;">
+        <!-- IKK Network Boundary -->
+        <rect x="10" y="10" width="680" height="700" rx="16" fill="#FDF0F2" stroke="#94122C" stroke-width="2.5"/>
+        <text x="350" y="40" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="13" font-weight="700" fill="#94122C" letter-spacing="2">IKK GROUP &mdash; INTERNAL NETWORK (ALL ON-PREMISES)</text>
+
+        <!-- Users box -->
+        <rect x="200" y="55" width="300" height="52" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="200" y="55" width="300" height="22" rx="8" fill="#94122C"/>
+        <rect x="200" y="66" width="300" height="11" fill="#94122C"/>
+        <text x="350" y="71" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="white">Users</text>
+        <text x="350" y="95" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Web Browser / Mobile  |  Arabic and English, text and voice</text>
+
+        <!-- Arrow 1 -->
+        <line x1="350" y1="107" x2="350" y2="128" stroke="#94122C" stroke-width="2" marker-end="url(#arrowhead)"/>
+        <text x="355" y="121" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">HTTPS TLS 1.3</text>
+
+        <!-- Conversational UI -->
+        <rect x="80" y="130" width="540" height="72" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="80" y="130" width="540" height="24" rx="8" fill="#94122C"/>
+        <rect x="80" y="146" width="540" height="8" fill="#94122C"/>
+        <text x="350" y="147" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="white">Conversational UI Layer</text>
+        <text x="350" y="168" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#333">React / Next.js &mdash; Chat interface with chart rendering &mdash; Arabic RTL and English &mdash; Voice input and output</text>
+        <text x="350" y="185" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">Chart.js / Recharts</text>
+
+        <!-- Arrow 2 -->
+        <line x1="350" y1="202" x2="350" y2="222" stroke="#94122C" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+        <!-- Auth -->
+        <rect x="80" y="224" width="540" height="72" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="80" y="224" width="540" height="24" rx="8" fill="#94122C"/>
+        <rect x="80" y="240" width="540" height="8" fill="#94122C"/>
+        <text x="350" y="241" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="white">Authentication and Access Control</text>
+        <text x="350" y="262" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#333">Azure AD SSO (on-premises) &mdash; RBAC: legal entity and role-based</text>
+        <text x="350" y="279" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#555">All tokens validated on-prem</text>
+
+        <!-- Arrow 3 -->
+        <line x1="350" y1="296" x2="350" y2="316" stroke="#94122C" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+        <!-- AI Orchestration -->
+        <rect x="80" y="318" width="540" height="82" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="80" y="318" width="540" height="24" rx="8" fill="#94122C"/>
+        <rect x="80" y="334" width="540" height="8" fill="#94122C"/>
+        <text x="350" y="335" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="white">AI Agent Orchestration</text>
+        <text x="350" y="358" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#333">Query intent classifier (Arabic/English) &mdash; NL-to-SQL engine with semantic layer</text>
+        <text x="350" y="375" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#555">Query planner and result formatter &mdash; Hybrid boundary enforcer</text>
+        <text x="350" y="391" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">Chart trigger &mdash; Chart.js/Recharts payload generation</text>
+
+        <!-- Arrow 4 -->
+        <line x1="350" y1="400" x2="350" y2="420" stroke="#94122C" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+        <!-- LLM Inference -->
+        <rect x="80" y="422" width="540" height="72" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="80" y="422" width="540" height="24" rx="8" fill="#94122C"/>
+        <rect x="80" y="438" width="540" height="8" fill="#94122C"/>
+        <text x="350" y="439" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="white">LLM Inference Server</text>
+        <text x="350" y="460" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#333">Qwen2.5-72B-Instruct (4-bit quantised) &mdash; vLLM / llama.cpp</text>
+        <text x="350" y="477" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#555">2x NVIDIA L40S 48 GB &mdash; Whisper STT &mdash; Munsit TTS</text>
+        <text x="350" y="491" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">HPE ProLiant DL380a Gen11</text>
+
+        <!-- Arrow 5 -->
+        <line x1="350" y1="494" x2="350" y2="514" stroke="#94122C" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+        <!-- Data Layer -->
+        <rect x="80" y="516" width="540" height="72" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="80" y="516" width="540" height="24" rx="8" fill="#94122C"/>
+        <rect x="80" y="532" width="540" height="8" fill="#94122C"/>
+        <text x="350" y="533" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="white">Data Layer</text>
+        <text x="350" y="554" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#333">Analytics SQL Server (BYOD replica) &mdash; Semantic mapping layer (JSON)</text>
+        <text x="350" y="571" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#555">OData connector for real-time lookups &mdash; Read-only accounts, no write path</text>
+        <text x="350" y="585" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">HPE ProLiant DL360 Gen11</text>
+
+        <!-- Bidirectional Arrow -->
+        <line x1="350" y1="588" x2="350" y2="618" stroke="#94122C" stroke-width="2" marker-end="url(#arrowhead)" marker-start="url(#arrowhead-rev)"/>
+        <text x="355" y="607" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">BYOD delta sync / OData read</text>
+
+        <!-- D365 F&O -->
+        <rect x="80" y="620" width="540" height="72" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+        <rect x="80" y="620" width="540" height="24" rx="8" fill="#94122C"/>
+        <rect x="80" y="636" width="540" height="8" fill="#94122C"/>
+        <text x="350" y="637" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="white">D365 F&amp;O On-Premises</text>
+        <text x="350" y="658" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#333">Data Entities via OData &mdash; BYOD batch export jobs</text>
+        <text x="350" y="675" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" fill="#555">No raw AXDB access</text>
+        <text x="350" y="689" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">40+ legal entities</text>
+
+        <!-- Hybrid Boundary -->
+        <rect x="10" y="720" width="680" height="100" rx="12" fill="#FBEEDB" stroke="#FF9408" stroke-width="2" stroke-dasharray="8,4"/>
+        <text x="350" y="744" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#FF9408" letter-spacing="1.5">HYBRID BOUNDARY &mdash; Controlled egress, macro-economic context only</text>
+        <text x="350" y="762" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Anonymised aggregates only &mdash; no customer data, no entity names</text>
+
+        <!-- Arrow to external -->
+        <line x1="350" y1="712" x2="350" y2="722" stroke="#FF9408" stroke-width="2" marker-end="url(#arrowhead-orange)"/>
+
+        <!-- External API box -->
+        <rect x="200" y="774" width="300" height="36" rx="6" fill="white" stroke="#FF9408" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="350" y="797" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="600" fill="#555">External LLM API (OpenAI / Anthropic)</text>
+
+        <!-- Arrow definitions -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#94122C"/>
+          </marker>
+          <marker id="arrowhead-rev" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto">
+            <polygon points="10 0, 0 3.5, 10 7" fill="#94122C"/>
+          </marker>
+          <marker id="arrowhead-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#FF9408"/>
+          </marker>
+        </defs>
+      </svg>
+      <p class="arch-caption">Every component runs inside IKK's network. No cloud dependency for standard operation.</p>
+    </div>
+  </div>
+  <div class="slide-number">04 / 11</div>
+</section>
+
+<!-- SLIDE 5: HYBRID BOUNDARY -->
+<section class="slide" id="s5">
+  <div class="slide-inner">
+    <div class="slide-label">Data Sovereignty</div>
+    <div class="slide-title">Two Query Paths. One Boundary Guarantee.</div>
+    <div class="split-layout">
+      <div class="split-col">
+        <h3>Standard Query Flow &mdash; 100% On-Premises</h3>
+        <!-- SVG DIAGRAM 2 -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 500" width="320" style="max-width:100%;height:auto;">
+          <rect x="5" y="5" width="310" height="490" rx="12" fill="white" stroke="#94122C" stroke-width="2"/>
+          <text x="160" y="30" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#94122C" letter-spacing="1">IKK INTERNAL NETWORK</text>
+
+          <!-- Node 1: User -->
+          <rect x="80" y="45" width="160" height="36" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="68" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">User</text>
+
+          <line x1="160" y1="81" x2="160" y2="103" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <text x="165" y="95" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">NL query &mdash; English or Arabic</text>
+
+          <!-- Node 2: AI Agent -->
+          <rect x="55" y="105" width="210" height="48" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="126" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">AI Agent</text>
+          <text x="160" y="144" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Azure AD token validated</text>
+
+          <line x1="160" y1="153" x2="160" y2="173" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+          <!-- Node 3: LLM -->
+          <rect x="40" y="175" width="240" height="56" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="198" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">LLM Inference</text>
+          <text x="160" y="214" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Qwen2.5-72B</text>
+          <text x="160" y="228" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">Intent: INTERNAL DATA</text>
+
+          <line x1="160" y1="231" x2="160" y2="251" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr1)"/>
+          <text x="165" y="244" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">SQL generation</text>
+
+          <!-- Node 4: SQL -->
+          <rect x="55" y="253" width="210" height="48" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="274" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">Analytics SQL Server</text>
+          <text x="160" y="292" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Read-only query</text>
+
+          <line x1="160" y1="301" x2="160" y2="321" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+          <!-- Node 5: AI Agent format -->
+          <rect x="40" y="323" width="240" height="56" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="344" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">AI Agent &mdash; Format Response</text>
+          <text x="160" y="360" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">English or Arabic</text>
+          <text x="160" y="374" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">Chart payload if applicable</text>
+
+          <line x1="160" y1="379" x2="160" y2="399" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+          <!-- Node 6: User sees answer -->
+          <rect x="55" y="401" width="210" height="36" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="424" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#1A1A1A">User sees answer and chart</text>
+
+          <!-- Green badge -->
+          <rect x="60" y="450" width="200" height="28" rx="14" fill="#E8F5E9"/>
+          <text x="160" y="468" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#2E7D32">&#10003; Zero data leaves IKK's network</text>
+
+          <defs>
+            <marker id="arr1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#94122C"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="split-col">
+        <h3>Hybrid Query Flow &mdash; Macro Context Only</h3>
+        <!-- SVG DIAGRAM 3 -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 600" width="320" style="max-width:100%;height:auto;">
+          <!-- IKK boundary top -->
+          <rect x="5" y="5" width="310" height="330" rx="12" fill="white" stroke="#94122C" stroke-width="2"/>
+          <text x="160" y="28" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#94122C" letter-spacing="1">IKK INTERNAL NETWORK</text>
+
+          <!-- User -->
+          <rect x="60" y="38" width="200" height="46" rx="8" fill="white" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="58" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">User</text>
+          <text x="160" y="76" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Macro-economic context query</text>
+
+          <line x1="160" y1="84" x2="160" y2="104" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+          <!-- AI Agent detect -->
+          <rect x="45" y="106" width="230" height="46" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="126" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">AI Agent</text>
+          <text x="160" y="144" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Detects hybrid intent</text>
+
+          <line x1="160" y1="152" x2="160" y2="170" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="165" y="164" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#888">Step 1: retrieve internal figures</text>
+
+          <!-- SQL Server -->
+          <rect x="30" y="172" width="260" height="66" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="192" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">Analytics SQL Server</text>
+          <text x="160" y="209" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Returns: anonymised aggregate only</text>
+          <text x="160" y="224" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">e.g. Total Revenue: SAR 450M</text>
+          <text x="160" y="234" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#94122C">Never: customer names, entity IDs, transaction records</text>
+
+          <line x1="160" y1="238" x2="160" y2="256" stroke="#94122C" stroke-width="1.5" marker-end="url(#arr2)"/>
+          <text x="165" y="250" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#888">Step 2: construct external payload</text>
+
+          <!-- Payload box -->
+          <rect x="45" y="258" width="230" height="56" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="278" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#94122C">AI Agent</text>
+          <text x="160" y="294" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Payload: anonymised figure + question only</text>
+          <text x="160" y="308" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#888">No entity names, no transaction records</text>
+
+          <!-- Controlled boundary line -->
+          <line x1="5" y1="330" x2="315" y2="330" stroke="#FF9408" stroke-width="2" stroke-dasharray="8,4"/>
+          <text x="160" y="344" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#FF9408" letter-spacing="1">CONTROLLED BOUNDARY</text>
+
+          <!-- External zone -->
+          <rect x="5" y="350" width="310" height="100" rx="12" fill="#FBEEDB" stroke="#FF9408" stroke-width="2" stroke-dasharray="6,3"/>
+
+          <line x1="160" y1="315" x2="160" y2="365" stroke="#FF9408" stroke-width="1.5" marker-end="url(#arr3)"/>
+          <text x="165" y="358" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#888">Allowlisted endpoint only</text>
+
+          <!-- External LLM -->
+          <rect x="55" y="368" width="210" height="46" rx="8" fill="white" stroke="#FF9408" stroke-width="1.5"/>
+          <text x="160" y="389" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="12" font-weight="700" fill="#555">External LLM API</text>
+          <text x="160" y="406" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#888">Returns: macro-economic context</text>
+
+          <!-- Return to IKK zone -->
+          <rect x="5" y="460" width="310" height="130" rx="12" fill="white" stroke="#94122C" stroke-width="2"/>
+          <text x="160" y="482" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#94122C" letter-spacing="1">BACK ON-PREMISES</text>
+
+          <line x1="160" y1="414" x2="160" y2="462" stroke="#FF9408" stroke-width="1.5" marker-end="url(#arr4)"/>
+          <text x="165" y="441" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#888">Returns to on-prem synthesis</text>
+
+          <!-- Synthesis box -->
+          <rect x="25" y="486" width="270" height="60" rx="8" fill="#FDF0F2" stroke="#94122C" stroke-width="1.5"/>
+          <text x="160" y="506" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#94122C">AI Agent &mdash; On-Prem Synthesis</text>
+          <text x="160" y="522" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" fill="#555">Combine external context + internal data</text>
+          <text x="160" y="538" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="9" fill="#888">Hybrid call logged with payload hash</text>
+
+          <!-- Orange badge -->
+          <rect x="55" y="556" width="210" height="28" rx="14" fill="#FFF3E0"/>
+          <text x="160" y="575" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="11" font-weight="700" fill="#E65100">Boundary enforced in code, not configuration</text>
+
+          <defs>
+            <marker id="arr2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#94122C"/>
+            </marker>
+            <marker id="arr3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#FF9408"/>
+            </marker>
+            <marker id="arr4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#FF9408"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Boundary guarantee:</strong> No transaction record, customer name, entity identifier, or balance sheet figure ever appears in an external API call. The boundary is enforced in code, not configuration.
+    </div>
+  </div>
+  <div class="slide-number">05 / 11</div>
+</section>
+
+<!-- SLIDE 6: Q&A -->
+<section class="slide slide-grey" id="s6">
+  <div class="slide-inner">
+    <div class="slide-label">Vendor Brief Responses</div>
+    <div class="slide-title">Answers to Your Questions</div>
+    <div class="cards-2x2">
+      <div class="qa-card">
+        <div class="qa-q">Q1 &mdash; OData API vs direct SQL: which integration approach?</div>
+        <div class="qa-a">
+          <strong>OData + BYOD analytics database. Not direct SQL on AXDB.</strong>
+          <p class="qa-detail">Microsoft's official guidance for D365 F&amp;O on-premises identifies OData via Data Entities as the supported integration pattern. Direct AXDB access is unsupported, introduces locking risk on live ERP operations, and breaks on schema changes during system updates.</p>
+          <p class="qa-detail">OData handles real-time lookups on small result sets. The BYOD analytics database handles analytical aggregations — trend analysis, multi-entity comparisons — on a performance-isolated read-only replica. The two mechanisms work together as one data layer.</p>
+        </div>
+      </div>
+      <div class="qa-card">
+        <div class="qa-q">Q2 &mdash; Should a data warehouse layer be introduced? How is data kept current?</div>
+        <div class="qa-a">
+          <strong>Yes, a lightweight BYOD analytics database. Not a full star-schema warehouse.</strong>
+          <p class="qa-detail">A dedicated SQL Server 2022 instance on-premises receives incremental delta exports from D365 via BYOD batch jobs. After the initial full load, only changed records are pushed — no full-table refreshes.</p>
+          <div class="qa-table">
+            <div class="qt-row qt-header"><span>Module</span><span>Sync method</span><span>Frequency</span></div>
+            <div class="qt-row"><span>Finance (GL, P&amp;L)</span><span>Delta</span><span>Every 4 hours</span></div>
+            <div class="qt-row"><span>Sales and AR</span><span>Delta</span><span>Every 1 hour</span></div>
+            <div class="qt-row"><span>Procurement and AP</span><span>Delta</span><span>Every 1 hour</span></div>
+            <div class="qt-row"><span>Inventory</span><span>Delta</span><span>Every 2 hours</span></div>
+            <div class="qt-row"><span>Reference data</span><span>Full refresh</span><span>Weekly</span></div>
+          </div>
+          <p class="qa-detail" style="margin-top:8px;">A full data warehouse adds 3 to 4 months of complexity for capabilities BYOD already covers. It can be introduced in Phase 2 if cross-system analytics become a requirement.</p>
+        </div>
+      </div>
+      <div class="qa-card">
+        <div class="qa-q">Q3 &mdash; Is the agent limited to a fixed set of questions?</div>
+        <div class="qa-a">
+          <strong>No. Open-ended NL queries across all four D365 modules.</strong>
+          <p class="qa-detail">The agent is a generalised NL-to-SQL engine with a semantic layer. It does not have a pre-compiled list of supported reports. Any well-formed financial or operational question can be answered in English or Arabic from the same interface.</p>
+          <p class="qa-detail">The semantic layer is what makes this possible. It maps IKK's business vocabulary to D365's schema: what "revenue" means in IKK's chart of accounts, how legal entities join to financial dimensions, and how fiscal calendar filters apply. The semantic layer is built for IKK's specific D365 configuration during Phase 1.</p>
+          <p class="qa-detail" style="font-style:italic;color:var(--maroon);">Full use case coverage across all four modules is on the following slide.</p>
+        </div>
+      </div>
+      <div class="qa-card">
+        <div class="qa-q">Q4 &mdash; What hardware is recommended?</div>
+        <div class="qa-a">
+          <strong>HPE ProLiant DL380a Gen11 with 2x NVIDIA L40S 48 GB.</strong>
+          <p class="qa-detail">The DL380a Gen11 is the purpose-built AI/GPU variant of the DL380 family, designed for sustained inference workloads. Two L40S cards provide 96 GB total VRAM — sufficient for Qwen2.5-72B at 4-bit quantisation with headroom for concurrent sessions and the full application stack.</p>
+          <p class="qa-detail">A separate HPE DL360 Gen11 is recommended as the dedicated Analytics SQL Server, preventing resource contention during heavy query periods. Full specifications and the extended capacity configuration are on the next slide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">06 / 11</div>
+</section>
+
+<!-- SLIDE 7: USE CASE COVERAGE -->
+<section class="slide" id="s7">
+  <div class="slide-inner">
+    <div class="slide-label">Query Coverage</div>
+    <div class="slide-title">What You Can Ask</div>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:28px;max-width:700px;">The agent covers the full query surface of IKK's D365 data. The examples below are illustrative — the architecture does not place a ceiling on query variety.</p>
+    <div class="uc-grid">
+      <div class="uc-module">
+        <div class="uc-header" style="background:var(--maroon);">Finance — GL, P&amp;L, Balance Sheet</div>
+        <ul class="uc-list">
+          <li>Income statement for any period or date range</li>
+          <li>Balance sheet snapshot as of any date</li>
+          <li>Revenue vs budget — by entity, department, cost centre</li>
+          <li>Period-over-period comparison</li>
+          <li>Multi-entity consolidated group view</li>
+          <li>Budget variance and intercompany summaries</li>
+        </ul>
+      </div>
+      <div class="uc-module">
+        <div class="uc-header" style="background:#6B1020;">Sales and Accounts Receivable</div>
+        <ul class="uc-list">
+          <li>Revenue by customer, region, salesperson, or product</li>
+          <li>Top N customers by revenue</li>
+          <li>AR aging schedule — 30, 60, 90+ days</li>
+          <li>Overdue invoice drill-down by customer</li>
+          <li>Invoice-to-collection cycle time</li>
+          <li>Credit utilisation per customer</li>
+        </ul>
+      </div>
+      <div class="uc-module">
+        <div class="uc-header" style="background:#B85C00;">Procurement and Accounts Payable</div>
+        <ul class="uc-list">
+          <li>AP aging and payment schedule</li>
+          <li>Vendor spend by category or vendor</li>
+          <li>Purchase order vs invoice variance</li>
+          <li>Outstanding PO commitments</li>
+          <li>Vendor payment terms compliance</li>
+          <li>Spend by legal entity or project</li>
+        </ul>
+      </div>
+      <div class="uc-module">
+        <div class="uc-header" style="background:#1A5276;">Inventory</div>
+        <ul class="uc-list">
+          <li>Stock levels by item, warehouse, or location</li>
+          <li>Inventory aging — slow-moving and obsolete</li>
+          <li>Stock-on-hand valuation</li>
+          <li>Inventory turnover by category</li>
+          <li>Stock movement history</li>
+          <li>Dead stock identification</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:20px;">
+      <strong>Cross-module queries:</strong> Working capital position (AR + Inventory - AP), cash conversion cycle, group-wide financial summary across all 40+ entities, and macro-economic context queries via hybrid mode.
+    </div>
+  </div>
+  <div class="slide-number">07 / 11</div>
+</section>
+
+<!-- SLIDE 8: HARDWARE -->
+<section class="slide slide-grey" id="s8">
+  <div class="slide-inner">
+    <div class="slide-label">Infrastructure Sizing</div>
+    <div class="slide-title">Hardware Specifications</div>
+    <div class="hw-cards">
+      <div class="hw-card recommended">
+        <div class="hw-card-header">
+          <div class="hw-tag">Recommended &mdash; GPU Inference Server</div>
+          <div class="hw-name">HPE ProLiant DL380a Gen11</div>
+        </div>
+        <div class="hw-card-body">
+          <div class="hw-spec-row"><span class="spec-label">Form factor</span><span class="spec-value">2U rack</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Processors</span><span class="spec-value">2x Intel Xeon Gold 6438Y+ (32 cores each)</span></div>
+          <div class="hw-spec-row"><span class="spec-label">RAM</span><span class="spec-value">512 GB DDR5 (expandable to 3 TB)</span></div>
+          <div class="hw-spec-row"><span class="spec-label">GPU</span><span class="spec-value">2x NVIDIA L40S 48 GB GDDR6</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Total VRAM</span><span class="spec-value">96 GB</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Storage</span><span class="spec-value">4x 3.84 TB NVMe SSD</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Network</span><span class="spec-value">2x 25 GbE SFP+</span></div>
+          <div class="hw-spec-row"><span class="spec-label">OS</span><span class="spec-value">Ubuntu 22.04 LTS or RHEL 9</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Est. price</span><span class="spec-value price-highlight">USD 85,000 &mdash; 110,000</span></div>
+        </div>
+      </div>
+      <div class="hw-card">
+        <div class="hw-card-header">
+          <div class="hw-tag">Analytics SQL Server</div>
+          <div class="hw-name">HPE ProLiant DL360 Gen11</div>
+        </div>
+        <div class="hw-card-body">
+          <div class="hw-spec-row"><span class="spec-label">Processors</span><span class="spec-value">2x Intel Xeon Silver</span></div>
+          <div class="hw-spec-row"><span class="spec-label">RAM</span><span class="spec-value">256 GB</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Storage</span><span class="spec-value">8x 3.84 TB NVMe SSD</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Purpose</span><span class="spec-value">BYOD replica, semantic layer, OData connector</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Est. price</span><span class="spec-value price-highlight">USD 18,000 &mdash; 25,000</span></div>
+        </div>
+      </div>
+    </div>
+      <div class="hw-card future">
+        <div class="hw-card-header">
+          <div class="hw-tag" style="color:var(--orange);opacity:1;">Extended Capacity — Phase 2 Ready</div>
+          <div class="hw-name" style="color:white;">HPE ProLiant DL380a Gen11 — Config B</div>
+        </div>
+        <div class="hw-card-body">
+          <div class="hw-spec-row"><span class="spec-label">GPU</span><span class="spec-value">4x NVIDIA L40S 48 GB (all slots)</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Total VRAM</span><span class="spec-value">192 GB</span></div>
+          <div class="hw-spec-row"><span class="spec-label">RAM</span><span class="spec-value">1 TB DDR5</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Additional capability</span><span class="spec-value">Run Qwen2.5-72B + a specialist 7B model simultaneously</span></div>
+          <div class="hw-spec-row"><span class="spec-label">Est. price</span><span class="spec-value price-highlight">USD 110,000 to 140,000</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">IKK procures hardware directly from HPE or authorised KSA reseller. Damco provides bill of materials and facilitates the HPE KSA engagement.</p>
+    <div class="callout">
+      <strong>Why L40S, not A100:</strong> L40S is inference-optimised. Cost: USD 7,500 to 8,500/card vs USD 29,000 to 33,000 for A100. Two L40S = 96 GB VRAM — ample for Qwen2.5-72B at Q4. HBM bandwidth advantage is relevant for large-batch training, not inference.
+    </div>
+    <div class="callout" style="border-left-color:var(--orange);margin-top:12px;">
+      <strong>When to consider Config B:</strong> Config A is the correct starting point for Phase 1. Config B is the natural upgrade path if IKK's Phase 2 scope requires running multiple models concurrently — for example, Qwen2.5-72B for general queries alongside a fine-tuned 7B model for domain-specific Gulf Arabic financial queries — or if concurrent user load increases significantly post-launch. The hardware can be ordered with Config A now and upgraded by adding two L40S cards later.
+    </div>
+  </div>
+  <div class="slide-number">08 / 11</div>
+</section>
+
+<!-- SLIDE 9: PHASES -->
+<section class="slide" id="s9">
+  <div class="slide-inner">
+    <div class="slide-label">Delivery Structure</div>
+    <div class="slide-title">Phased Delivery</div>
+    <div class="phases">
+      <div class="phase-card active">
+        <div class="phase-badge">0</div>
+        <div class="phase-title">Proof of Concept</div>
+        <div class="phase-section-label">Scope</div>
+        <ul class="phase-items">
+          <li>Finance module on IKK's actual D365 data</li>
+          <li>15 to 20 NL queries, English and Arabic</li>
+          <li>Azure AD SSO with legal entity RBAC</li>
+          <li>Text interface (voice in Phase 1)</li>
+          <li>On-premises only — no cloud dependency</li>
+        </ul>
+        <div class="phase-section-label" style="margin-top:10px;">Success Criteria</div>
+        <ul class="phase-items success">
+          <li>85%+ query accuracy on Finance entities</li>
+          <li>Arabic and English both functional</li>
+          <li>Legal entity isolation enforced (A cannot see B)</li>
+          <li>Response latency under 8 seconds</li>
+        </ul>
+        <span class="phase-tag">POC credited against Phase 1 in full</span>
+      </div>
+      <div class="phase-card">
+        <div class="phase-badge">1</div>
+        <div class="phase-title">Core Deployment</div>
+        <div class="phase-section-label">Scope</div>
+        <ul class="phase-items">
+          <li>All 4 modules: Finance, AR, AP, Inventory</li>
+          <li>Full semantic layer for IKK's D365 schema</li>
+          <li>Voice interface (Whisper STT + Munsit TTS)</li>
+          <li>Full RBAC across all legal entities</li>
+          <li>Immutable audit logging and security</li>
+          <li>Web UI with chart generation</li>
+          <li>Hybrid intelligence boundary</li>
+          <li>UAT and handover documentation</li>
+        </ul>
+        <div class="phase-section-label" style="margin-top:10px;">Success Criteria</div>
+        <ul class="phase-items success">
+          <li>Full query coverage across all 4 modules</li>
+          <li>Arabic voice input and output functional</li>
+          <li>RBAC enforced across all 40+ legal entities</li>
+          <li>Audit log capturing all queries and responses</li>
+          <li>UAT sign-off by IKK team</li>
+        </ul>
+        <span class="phase-tag">Production-ready at handover</span>
+      </div>
+      <div class="phase-card">
+        <div class="phase-badge">2</div>
+        <div class="phase-title">Expansion</div>
+        <div class="phase-section-label">Scope</div>
+        <ul class="phase-items">
+          <li>Mobile app (iOS and Android)</li>
+          <li>LLM fine-tuning on Gulf Arabic vocabulary</li>
+          <li>Additional D365 modules or HR / Document AI</li>
+          <li>Scheduled report delivery (email / Teams)</li>
+          <li>Predictive analytics and cash flow forecasting</li>
+          <li>Full data warehouse if cross-system analytics needed</li>
+        </ul>
+        <div class="phase-section-label" style="margin-top:10px;">Success Criteria</div>
+        <ul class="phase-items success">
+          <li>Mobile app live on iOS and Android</li>
+          <li>Gulf Arabic financial term accuracy improved vs Phase 1 baseline</li>
+          <li>Scheduled reports delivering to nominated executives</li>
+        </ul>
+        <span class="phase-tag">Scope defined based on Phase 1 adoption</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">09 / 11</div>
+</section>
+
+<!-- SLIDE 10: CREDENTIALS -->
+<section class="slide slide-grey" id="s10">
+  <div class="slide-inner">
+    <div class="slide-label">Why Damco</div>
+    <div class="slide-title">Damco's Credentials</div>
+    <div class="cred-cols">
+      <div class="cred-col">
+        <h3>D365 F&amp;O Experience</h3>
+        <ul>
+          <li>Active D365 F&amp;O implementation and support engagements across Gulf and South Asian clients</li>
+          <li>Schema-level familiarity with Finance, AR, AP, and Inventory entity models</li>
+          <li>BYOD configuration experience from live production D365 engagements</li>
+          <li>Direct knowledge of D365 data entity schemas, financial dimension structures, and on-premises deployment constraints</li>
+          <li>Multi-entity and multi-legal-entity configuration patterns</li>
+        </ul>
+      </div>
+      <div class="cred-col">
+        <h3>AI Engineering Practice</h3>
+        <ul>
+          <li>NL-to-SQL and LLM query interface delivery in enterprise settings</li>
+          <li>On-premises LLM deployments (Qwen, Llama, Whisper, vLLM) in data-sovereign environments</li>
+          <li>Case studies available under NDA</li>
+          <li>Comparable engagements with specific references available under mutual NDA</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>Honest positioning:</strong> This architecture is at the frontier of enterprise AI in the GCC. The components are proven. The configuration is designed specifically for IKK's sovereignty requirements, D365 schema, and multi-entity structure.
+    </div>
+  </div>
+  <div class="slide-number">10 / 11</div>
+</section>
+
+<!-- SLIDE 11: NEXT STEP -->
+<section class="slide" id="s11">
+  <div class="slide-inner" style="text-align:center;">
+    <div class="slide-label" style="color:var(--orange);">Proposed Action</div>
+    <div class="slide-title">Proposed Next Step</div>
+    <div class="ns-body">
+      <p>A working session with IKK's broader team &mdash; CIO and relevant IT and finance stakeholders &mdash; to walk through the architecture, address questions on the integration approach and hardware specification, and agree on the proof of concept scope.</p>
+      <p>Please confirm preferred timing and attendees.</p>
+    </div>
+    <div class="contact-block">
+      <div class="contact-label">Damco Contact</div>
+      <div class="contact-row">Account Team: <span>Vishav Bhatia</span></div>
+      <div class="contact-row">Email: <span>vishavb@Damcogroup.com</span></div>
+      <div class="contact-row">Responding to: <span>Omar El-Edelbi, IKK Group</span></div>
+    </div>
+  </div>
+  <div class="slide-number" style="color:rgba(255,255,255,0.3);">11 / 11</div>
+</section>
+
+<button class="pdf-btn" onclick="window.print()" title="Set paper size to A4, orientation Landscape, margins None">Export PDF</button>
+
+<script>
+  // Highlight active nav dot on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav .nav-dots a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.querySelector('.dot').style.background = 'rgba(255,255,255,0.3)';
+          link.style.color = 'rgba(255,255,255,0.55)';
+        });
+        const activeLink = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if (activeLink) {
+          activeLink.querySelector('.dot').style.background = '#FF9408';
+          activeLink.style.color = '#FF9408';
+        }
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
