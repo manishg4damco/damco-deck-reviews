@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infrastructure Recommendation — The Aviator School LMS v1.1</title>
+<style>
+:root {
+  --navy:        #0f2344;
+  --navy-mid:    #1a3660;
+  --navy-light:  #253f7a;
+  --blue:        #1d4ed8;
+  --blue-lt:     #dbeafe;
+  --teal:        #0d9488;
+  --teal-lt:     #f0fdfa;
+  --amber:       #d97706;
+  --amber-lt:    #fffbeb;
+  --red:         #dc2626;
+  --red-lt:      #fef2f2;
+  --green:       #16a34a;
+  --green-lt:    #f0fdf4;
+  --gray-50:     #f8fafc;
+  --gray-100:    #f1f5f9;
+  --gray-200:    #e2e8f0;
+  --gray-400:    #94a3b8;
+  --gray-600:    #475569;
+  --gray-700:    #334155;
+  --gray-800:    #1e293b;
+  --orange:      #ea580c;
+  --sidebar-w:   252px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--gray-800);
+  background: var(--gray-50);
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--navy);
+  color: #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-light) transparent;
+}
+.sidebar-brand {
+  padding: 20px 16px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  border-bottom: 1px solid var(--navy-light);
+  user-select: none;
+}
+.sidebar-brand span { color: #60a5fa; }
+.sidebar-nav { padding: 12px 0 24px; flex: 1; }
+.nav-section { margin-bottom: 2px; }
+.nav-link {
+  display: block;
+  padding: 7px 16px;
+  font-size: 12.5px;
+  color: #94a3b8;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all .15s;
+}
+.nav-link:hover { color: #e2e8f0; background: rgba(255,255,255,.05); border-left-color: #60a5fa; }
+.nav-link.parent { font-weight: 600; color: #cbd5e1; font-size: 12px; }
+.nav-link.child { padding-left: 30px; font-size: 12px; }
+.nav-label {
+  display: inline-block;
+  width: 20px;
+  font-weight: 700;
+  color: #60a5fa;
+  font-size: 11px;
+}
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--navy-light);
+  font-size: 11px;
+  color: #475569;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+}
+
+/* ── DOC HEADER ── */
+.doc-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1d4ed8 100%);
+  color: white;
+  padding: 36px 48px 32px;
+}
+.doc-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -.02em;
+}
+.doc-header .subtitle { color: #93c5fd; font-size: 13px; margin-bottom: 20px; }
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px 20px;
+}
+.meta-item { font-size: 12px; color: #bfdbfe; }
+.meta-item strong { display: block; color: white; font-size: 13px; margin-bottom: 1px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.badge-pending  { background: #fbbf24; color: #78350f; }
+.badge-critical { background: var(--red); color: white; }
+.badge-info     { background: #60a5fa; color: #1e3a5f; }
+.badge-green    { background: #4ade80; color: #14532d; }
+.badge-gray     { background: var(--gray-200); color: var(--gray-700); }
+.badge-teal     { background: #2dd4bf; color: #134e4a; }
+
+/* ── ALERT BANNER ── */
+.alert {
+  padding: 14px 48px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.alert-action  { background: #fef3c7; border-bottom: 3px solid var(--amber); color: #92400e; }
+.alert-critical{ background: var(--red-lt); border-bottom: 3px solid var(--red); color: #7f1d1d; }
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert strong { font-weight: 700; }
+
+/* ── CONTENT WRAPPER ── */
+.content { padding: 0 48px 64px; max-width: 1100px; }
+
+/* ── SECTIONS ── */
+.section { margin-top: 40px; }
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  background: var(--navy);
+  color: white;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 0;
+}
+.section-heading .sec-num {
+  background: rgba(255,255,255,.15);
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+.section-heading h2 { font-size: 16px; font-weight: 600; flex: 1; }
+.section-body {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 24px;
+}
+
+/* ── SUBSECTIONS ── */
+.sub-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  border-left: 4px solid var(--blue);
+  padding-left: 10px;
+  margin: 22px 0 10px;
+}
+.sub-heading:first-child { margin-top: 0; }
+.sub-sub-heading {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin: 16px 0 8px;
+}
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x: auto; margin: 10px 0; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  background: var(--navy);
+  color: white;
+  padding: 9px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+}
+thead th:first-child { border-radius: 0; }
+tbody td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--gray-100);
+  vertical-align: top;
+}
+tbody tr:nth-child(even) td { background: #f8fafc; }
+tbody tr:hover td { background: var(--blue-lt); }
+tbody tr.highlight-row td { background: var(--teal-lt); font-weight: 600; }
+tbody tr.total-row td { background: var(--navy); color: white; font-weight: 700; }
+td.cost { text-align: right; font-variant-numeric: tabular-nums; font-family: 'SFMono-Regular', Consolas, monospace; }
+th.cost { text-align: right; }
+td.winner { color: var(--green); font-weight: 700; }
+td.bold { font-weight: 700; }
+
+/* ── CARDS & CALLOUTS ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 12px 0;
+}
+.card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--gray-600);
+  margin-bottom: 6px;
+}
+.card-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+.card-value.teal { color: var(--teal); }
+.card-value.blue { color: var(--blue); }
+.card-sub { font-size: 11px; color: var(--gray-600); margin-top: 2px; }
+
+.callout {
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+}
+.callout-icon { font-size: 18px; flex-shrink: 0; }
+.callout-body strong { display: block; font-size: 13px; margin-bottom: 3px; }
+.callout-body p, .callout-body ul { margin: 2px 0; }
+.callout-body ul { padding-left: 18px; }
+.callout-blue   { background: var(--blue-lt); border-left: 5px solid var(--blue); }
+.callout-teal   { background: var(--teal-lt); border-left: 5px solid var(--teal); }
+.callout-amber  { background: var(--amber-lt); border-left: 5px solid var(--amber); color: #78350f; }
+.callout-red    { background: var(--red-lt); border-left: 5px solid var(--red); color: #7f1d1d; }
+.callout-green  { background: var(--green-lt); border-left: 5px solid var(--green); }
+
+.recommend-box {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  color: white;
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 12px 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.recommend-box .rec-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #93c5fd; }
+.recommend-box .rec-value { font-size: 20px; font-weight: 800; }
+.recommend-box .rec-note  { font-size: 12px; color: #bfdbfe; margin-top: 2px; }
+
+.tco-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+.tco-card {
+  background: white;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.tco-card.conservative { border-color: var(--teal); }
+.tco-card.best-case    { border-color: var(--blue); }
+.tco-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gray-600); margin-bottom: 6px; }
+.tco-scenario { font-size: 12px; color: var(--gray-600); margin-bottom: 10px; }
+.tco-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--gray-100); }
+.tco-row:last-child { border-bottom: none; }
+.tco-key { font-size: 12px; color: var(--gray-600); }
+.tco-val { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; font-family: 'SFMono-Regular', Consolas, monospace; }
+.tco-total { font-size: 20px; font-weight: 800; margin-top: 10px; }
+.tco-total.teal { color: var(--teal); }
+.tco-total.blue { color: var(--blue); }
+
+/* ── CHECKLIST ── */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: white;
+  transition: background .15s;
+  cursor: pointer;
+}
+.checklist-item:hover { background: var(--blue-lt); }
+.checklist-item input[type=checkbox] { margin-top: 2px; width: 16px; height: 16px; accent-color: var(--blue); flex-shrink: 0; cursor: pointer; }
+.checklist-item label { cursor: pointer; flex: 1; }
+.checklist-item label strong { display: block; font-size: 13px; color: var(--gray-800); }
+.checklist-item label span { font-size: 12px; color: var(--gray-600); }
+.checklist-item.checked label strong { text-decoration: line-through; color: var(--gray-400); }
+
+/* ── MISC ── */
+p { margin: 6px 0 8px; font-size: 13px; }
+ul, ol { padding-left: 20px; margin: 6px 0 10px; }
+li { margin-bottom: 3px; font-size: 13px; }
+code { background: var(--gray-100); padding: 1px 5px; border-radius: 3px; font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px; }
+hr { border: none; border-top: 1px solid var(--gray-200); margin: 20px 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.tag-blue  { background: var(--blue-lt); color: var(--blue); }
+.tag-red   { background: var(--red-lt); color: var(--red); }
+.tag-teal  { background: var(--teal-lt); color: var(--teal); }
+.tag-amber { background: var(--amber-lt); color: var(--amber); }
+.tag-gray  { background: var(--gray-100); color: var(--gray-600); }
+.dec-id { font-weight: 700; color: var(--blue); font-size: 12px; }
+.footnote { font-size: 12px; color: var(--gray-600); margin-top: 8px; }
+
+/* ── PRINT ── */
+@media print {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .doc-header { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .section-heading { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  thead th { background: var(--navy) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .section { page-break-inside: avoid; }
+  .tco-box { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 860px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .content { padding: 0 20px 40px; }
+  .doc-header { padding: 24px 20px; }
+  .alert { padding: 12px 20px; }
+  .tco-box { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sidebar-brand">The Aviator School LMS<br><span>Infrastructure Review</span></div>
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <a href="#s1" class="nav-link parent"><span class="nav-label">01</span> Project Overview</a>
+      <a href="#s2" class="nav-link parent"><span class="nav-label">02</span> Cloud Recommendation</a>
+      <a href="#s3" class="nav-link parent"><span class="nav-label">03</span> Environment Strategy</a>
+      <a href="#s4" class="nav-link parent"><span class="nav-label">04</span> Services &amp; Sizing</a>
+      <a href="#s4-1" class="nav-link child">4.1 Compute</a>
+      <a href="#s4-2" class="nav-link child">4.2 Content Delivery</a>
+      <a href="#s4-3" class="nav-link child">4.3 Data Layer</a>
+      <a href="#s4-4" class="nav-link child">4.4 Communications</a>
+      <a href="#s4-5" class="nav-link child">4.5 Payments &amp; Video</a>
+      <a href="#s4-6" class="nav-link child">4.6 Operations &amp; Security</a>
+      <a href="#s4-7" class="nav-link child">4.7 Accounts &amp; Regulatory</a>
+      <a href="#s4-8" class="nav-link child">4.8 Chat Support</a>
+      <a href="#s5" class="nav-link parent"><span class="nav-label">05</span> 3-Year Cost Model</a>
+      <a href="#s6" class="nav-link parent"><span class="nav-label">06</span> Infra Management</a>
+      <a href="#s7" class="nav-link parent"><span class="nav-label">07</span> Architecture Decisions</a>
+      <a href="#s8" class="nav-link parent"><span class="nav-label">08</span> Setup Dependencies</a>
+      <a href="#s9" class="nav-link parent"><span class="nav-label">09</span> Exclusions</a>
+      <a href="#s10" class="nav-link parent"><span class="nav-label">10</span> Approval Checklist</a>
+    </div>
+  </div>
+  <div class="sidebar-footer">v1.1 &nbsp;·&nbsp; 2026-04-06<br>Internal use only</div>
+</nav>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="subtitle">Damco Solutions · Pre-Sales · Internal Infrastructure Review</div>
+  <h1>Infrastructure Recommendation — The Aviator School LMS</h1>
+  <div class="meta-grid" style="margin-top:18px">
+    <div class="meta-item"><strong>Document type</strong>For Damco infra team sign-off before proposal</div>
+    <div class="meta-item"><strong>Prepared by</strong>Damco Solutions, Pre-Sales</div>
+    <div class="meta-item"><strong>Date</strong>2026-04-06</div>
+    <div class="meta-item"><strong>Version</strong><span class="badge badge-info">v1.1</span></div>
+    <div class="meta-item"><strong>Status</strong><span class="badge badge-pending">Pending Review</span></div>
+    <div class="meta-item"><strong>Revalidated</strong>Prod Fargate → 4 GB · RDS Year 1 → t3.medium · Decision #20 added</div>
+  </div>
+</div>
+
+<!-- ACTION REQUIRED BANNER -->
+<div class="alert alert-action">
+  <div class="alert-icon">&#9888;</div>
+  <div>
+    <strong>ACTION REQUIRED — Infra Team Sign-off Needed</strong>
+    This document requests a formal green signal from the Damco infrastructure team before this opportunity proceeds to proposal stage. Review all sections and complete the Approval Checklist in Section 10. Any objection must include the specific concern, preferred alternative, and cost delta.
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ─────────────── SECTION 1 ─────────────── -->
+<div class="section" id="s1">
+  <div class="section-heading">
+    <span class="sec-num">01</span>
+    <h2>Project Overview</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="sub-heading">What is being built</div>
+    <p>JTR Aerospace Private Limited operates The Aviator School, an aviation pilot exam preparation academy in India. They are rebuilding their LMS from scratch to replace an existing OutSystems application. The new system covers DGCA certification exam preparation across SPL, PPL, CPL, ATPL, and Military tracks.</p>
+    <p>This is a <strong>full rebuild, not a migration.</strong> Damco is being engaged to design, build, and deliver the entire application.</p>
+
+    <div class="sub-heading">Two phases, three portals</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Phase</th><th>Portals</th><th>Platforms</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">Phase 1</td><td>Student Portal + LMS Admin Portal</td><td>Flutter iOS + Android + React web (Student) · React web (Admin)</td></tr>
+          <tr><td class="bold">Phase 2</td><td>FTO Portal (Flight Training Organization)</td><td>React web · Multi-tenant with per-FTO subdomain</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Phase 1 has two sub-phases: Phase 1A (Admin portal + Flutter mobile) and Phase 1B (Student web portal).</p>
+
+    <div class="sub-heading">Technology stack</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Technology</th></tr></thead>
+        <tbody>
+          <tr><td>Mobile app</td><td>Flutter (iOS + Android) · Drift/SQLite local DB</td></tr>
+          <tr><td>Backend API</td><td>NestJS (Node.js) · Prisma ORM</td></tr>
+          <tr><td>Database</td><td>PostgreSQL</td></tr>
+          <tr><td>Cache &amp; job queue</td><td>Redis (ElastiCache) — session cache, question cache, rate limiting, BullMQ async jobs</td></tr>
+          <tr><td>Web portals</td><td>React (Admin + Student Web + FTO Web) — all static builds</td></tr>
+          <tr><td>CI/CD</td><td>AWS CodeBuild + CodePipeline (NestJS, React, Android) · iOS built locally on developer Mac</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">Key application characteristics</div>
+    <ul>
+      <li><strong>Offline-first mobile:</strong> All study content downloaded to device. Audio up to 25 MB/chapter, PDFs up to 50 MB. Background sync every 2 minutes. 2-day offline window.</li>
+      <li><strong>Email:</strong> 40 templates exclusively via Microsoft 365 SMTP. Client owns M365 licence. Zero new email cost.</li>
+      <li><strong>SMS OTP:</strong> Twilio, Indian numbers only. DLT registration with TRAI is a hard prerequisite (see Section 8).</li>
+      <li><strong>Video:</strong> YouTube private embeds (client constraint C-01 in SRS). No self-hosted video.</li>
+      <li><strong>Payments:</strong> Razorpay across all platforms. No Apple IAP or Google Play Billing.</li>
+      <li><strong>Push notifications:</strong> FCM (Android) and APNs (iOS). Routed via AWS SNS.</li>
+      <li><strong>Multi-tenancy Phase 2:</strong> Row-Level Security in PostgreSQL. Per-FTO subdomain via Route 53 wildcard.</li>
+      <li><strong>Crash reporting &amp; analytics:</strong> Firebase Crashlytics + Firebase Analytics. Both free.</li>
+    </ul>
+
+    <div class="sub-heading">Target user base</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Scenario</th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr></thead>
+        <tbody>
+          <tr><td>Conservative</td><td>1,000</td><td>3,000 – 5,000</td><td>10,000</td></tr>
+          <tr><td>Best case</td><td>5,000</td><td>10,000</td><td>25,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">All users are in India.</p>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 2 ─────────────── -->
+<div class="section" id="s2">
+  <div class="section-heading">
+    <span class="sec-num">02</span>
+    <h2>Cloud Provider Recommendation</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="recommend-box">
+      <div>
+        <div class="rec-label">Recommendation</div>
+        <div class="rec-value">AWS ap-south-1 (Mumbai)</div>
+        <div class="rec-note">Lowest total cost · Pan-India CDN (33 edge locations) · Strongest NestJS + PostgreSQL community</div>
+      </div>
+    </div>
+
+    <div class="sub-heading">Cost comparison — all environments, steady state</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Provider</th><th class="cost">Monthly (all envs)</th><th class="cost">3-year estimate</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr class="highlight-row"><td><strong>AWS ap-south-1</strong></td><td class="cost">~&#8377;66,840</td><td class="cost">~&#8377;18,18,000</td><td class="winner">&#10003; Recommended</td></tr>
+          <tr><td>GCP asia-south1 (Mumbai)</td><td class="cost">~&#8377;63,745</td><td class="cost">~&#8377;15,86,500+</td><td><span class="tag tag-amber">Not recommended</span></td></tr>
+          <tr><td>Azure Central India</td><td class="cost">~&#8377;81,035</td><td class="cost">~&#8377;20,14,000</td><td><span class="tag tag-red">Eliminated</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-amber">
+      <div class="callout-icon">&#9432;</div>
+      <div class="callout-body">
+        <strong>GCP note</strong>
+        The GCP figure above is based on the original comparison. After proper apples-to-apples spec matching (Cloud Run Tier 2 premium in asia-south1, Cloud SQL HA equivalent to RDS Multi-AZ), AWS is 10–20% cheaper at current scale. GCP's Tier 2 compute premium and Cloud SQL HA pricing offset its Redis and CI/CD savings. AWS is also confirmed as the correct choice for the 3-year horizon due to Cloud SQL being materially more expensive at larger DB instance classes.
+      </div>
+    </div>
+
+    <div class="sub-heading">Rationale: AWS over Azure</div>
+    <ul>
+      <li>Azure Database for PostgreSQL Flexible Server (HA) is significantly more expensive than RDS Multi-AZ at equivalent spec (&#8377;11,400/month vs &#8377;9,975/month).</li>
+      <li>Azure Front Door WAF costs &#8377;3,610/month vs AWS WAF at &#8377;950/month for equivalent protection.</li>
+      <li>Azure Container Apps has a minimum billing floor that penalises low-traffic Dev and UAT environments.</li>
+    </ul>
+
+    <div class="sub-heading">Rationale: AWS over GCP</div>
+    <ul>
+      <li>Cloud Run (GCP) in asia-south1 is Tier 2 pricing — approximately 35% more expensive than US regions. With min-instances=2 (required for exam app availability), Cloud Run is more expensive than ECS Fargate.</li>
+      <li>AWS CloudFront has 33 India edge locations vs approximately 5–7 for GCP Cloud CDN — directly impacts audio file delivery speed (25 MB/chapter) across India.</li>
+      <li>AWS has the largest community and documentation base for the NestJS + PostgreSQL + Prisma stack, reducing operational risk for the build team.</li>
+    </ul>
+
+    <div class="sub-heading">Why ap-south-1 specifically</div>
+    <p>CloudFront has edge locations in Mumbai, Delhi, Chennai, Hyderabad, Bengaluru, and Kolkata. All students are in India. Audio file delivery (up to 25 MB/chapter) and PDF delivery benefit directly from pan-India CDN coverage with no additional configuration.</p>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 3 ─────────────── -->
+<div class="section" id="s3">
+  <div class="section-heading">
+    <span class="sec-num">03</span>
+    <h2>Environment Strategy</h2>
+  </div>
+  <div class="section-body">
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th>Purpose</th><th>Go-live timing</th></tr></thead>
+        <tbody>
+          <tr><td class="bold">Dev</td><td>Active development and team testing</td><td>Live from project Day 1</td></tr>
+          <tr><td class="bold">UAT</td><td>Client acceptance testing</td><td>Provisioned on-demand for each UAT cycle</td></tr>
+          <tr><td class="bold">Production</td><td>Live student-facing application</td><td>OFF until Phase 1A go-live (~month 4)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">Uptime rules</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">Dev environment</div>
+        <ul style="font-size:12px;margin:0;padding-left:16px">
+          <li>100% uptime during all active development (including when UAT is running — Dev stays ON)</li>
+          <li>20% uptime during AMC (business hours, weekdays only)</li>
+          <li>Scheduled RDS stop on nights and weekends during AMC</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">UAT environment</div>
+        <ul style="font-size:12px;margin:0;padding-left:16px">
+          <li>ON only during defined UAT cycles. OFF all other times.</li>
+          <li>Cycles: Phase 1A (3 weeks) · Phase 1B (1 week) · Phase 2 (2 weeks) · Quarterly 2-week cycles during AMC</li>
+          <li>Provision 1 business day before cycle. Teardown within 1 business day after sign-off.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Production environment</div>
+        <ul style="font-size:12px;margin:0;padding-left:16px">
+          <li>OFF until Phase 1A go-live (~end of month 4)</li>
+          <li>24/7 from go-live. Auto-scaling enabled.</li>
+          <li>No scheduled downtime post go-live without advance client notification.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sub-heading">Phase timeline — environment status</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Phase</th><th>Duration</th><th>Dev</th><th>UAT</th><th>Prod</th></tr></thead>
+        <tbody>
+          <tr><td>Phase 1A development</td><td>2.75 months</td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-gray">Off</span></td><td><span class="tag tag-gray">Off</span></td></tr>
+          <tr><td>Phase 1A UAT</td><td>0.75 months</td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-gray">Off</span></td></tr>
+          <tr><td>Phase 1B development</td><td>1.00 month</td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-gray">Off</span></td><td><span class="tag tag-blue">On</span></td></tr>
+          <tr><td>Phase 1B UAT</td><td>0.25 months</td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-blue">On</span></td></tr>
+          <tr><td>Phase 2 development</td><td>1.25 months</td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-gray">Off</span></td><td><span class="tag tag-blue">On</span></td></tr>
+          <tr><td>Phase 2 UAT</td><td>0.50 months</td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-teal">Full on</span></td><td><span class="tag tag-blue">On</span></td></tr>
+          <tr><td>AMC (month 9 onwards)</td><td>Ongoing</td><td><span class="tag tag-amber">20% uptime</span></td><td><span class="tag tag-amber">Quarterly</span></td><td><span class="tag tag-blue">24/7</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 4 ─────────────── -->
+<div class="section" id="s4">
+  <div class="section-heading">
+    <span class="sec-num">04</span>
+    <h2>Complete Services List — Sizing and Cost</h2>
+  </div>
+  <div class="section-body">
+    <p class="footnote" style="margin-bottom:14px">All costs in INR per month at full uptime. Conversion rate: <strong>1 USD = &#8377;95</strong>. Partial-month costs in Section 5 are prorated.</p>
+
+    <!-- 4.1 COMPUTE -->
+    <div class="sub-heading" id="s4-1">4.1 Compute and Hosting</div>
+
+    <div class="sub-sub-heading">NestJS API server — ECS Fargate</div>
+    <p>The NestJS backend runs as Docker containers managed by ECS Fargate. No idle server cost — capacity scales from 2 tasks minimum to 4 tasks under load. PgBouncer runs as a Fargate sidecar for PostgreSQL connection pooling at no additional cost.</p>
+    <div class="callout callout-teal">
+      <div class="callout-icon">&#9650;</div>
+      <div class="callout-body"><strong>Revalidated: 1 vCPU / 4 GB per task</strong> 4 GB is required because the NestJS monolith runs HTTP handlers, BullMQ workers, Prisma ORM, and DGCA timer state logic in a single process. Under peak exam load (200+ concurrent exam sessions) the combined heap pressure from active connections, in-flight Prisma queries, and worker threads pushes against a 2 GB ceiling.</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th>Spec</th><th>Config</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td>0.25 vCPU / 0.5 GB</td><td>Single task</td><td class="cost">&#8377;1,140</td></tr>
+          <tr><td>UAT</td><td>0.5 vCPU / 1 GB</td><td>Single task</td><td class="cost">&#8377;2,375</td></tr>
+          <tr><td>Prod (Year 1, 1K users)</td><td>1 vCPU / 4 GB</td><td>2 tasks min / 4 max, avg 2.5 tasks</td><td class="cost">&#8377;12,500</td></tr>
+          <tr><td>Prod (Year 2, 5K users)</td><td>1 vCPU / 4 GB</td><td>Avg 3 tasks</td><td class="cost">&#8377;16,570</td></tr>
+          <tr><td>Prod (Year 3, 10K users)</td><td>1 vCPU / 4 GB</td><td>Avg 3.5 tasks</td><td class="cost">&#8377;17,490</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-sub-heading">Application Load Balancer — Production only</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody><tr><td>Prod only</td><td class="cost">&#8377;1,710</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="sub-sub-heading">React web portals — S3 static hosting</div>
+    <p>All three React apps (Admin, Student Web, FTO Web) are static builds stored in S3 and served via CloudFront. No compute server required.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td class="cost">&#8377;285</td></tr>
+          <tr><td>UAT</td><td class="cost">&#8377;285</td></tr>
+          <tr><td>Prod</td><td class="cost">&#8377;475</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4.2 CONTENT DELIVERY -->
+    <div class="sub-heading" id="s4-2">4.2 Content Delivery</div>
+    <div class="sub-sub-heading">CloudFront CDN</div>
+    <p>Delivers audio files, PDFs, and React app bundles from edge locations across India. Signed URLs are used for all content delivery — a student's device cannot access audio or PDF files without a time-limited token issued by the API. Prevents hotlinking and protects content.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th>Use case</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td>App bundles only</td><td class="cost">&#8377;190</td></tr>
+          <tr><td>UAT</td><td>App bundles + content testing</td><td class="cost">&#8377;475</td></tr>
+          <tr><td>Prod (Year 1, 1K users)</td><td>~1 TB egress</td><td class="cost">&#8377;2,850</td></tr>
+          <tr><td>Prod (Year 2, 5K users)</td><td>~3 TB egress</td><td class="cost">&#8377;7,125</td></tr>
+          <tr><td>Prod (Year 3, 10K users)</td><td>~5 TB egress</td><td class="cost">&#8377;9,500</td></tr>
+          <tr><td>Prod (Best case Year 3, 25K)</td><td>~12 TB egress</td><td class="cost">&#8377;17,100</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">CloudFront egress in India: approximately &#8377;1.62 to &#8377;1.90/GB. Figures above use &#8377;1.90/GB conservative basis.</p>
+
+    <!-- 4.3 DATA LAYER -->
+    <div class="sub-heading" id="s4-3">4.3 Data Layer</div>
+    <div class="sub-sub-heading">PostgreSQL — RDS Multi-AZ</div>
+    <p>Primary relational database for all application data. Multi-AZ in Production provides automatic failover in 60–120 seconds with zero data loss. Automated daily backups: 7 days (Production), 3 days (Dev/UAT). Point-in-time recovery on Production.</p>
+    <div class="callout callout-teal">
+      <div class="callout-icon">&#9650;</div>
+      <div class="callout-body"><strong>Revalidated: Prod Year 1 upgraded to db.t3.medium</strong> db.t3.small has a 2 GB buffer pool and burstable CPU that depletes under sustained exam-season load. With 1K registered users and peak concurrent exam sessions (100–300 students), CPU credits exhaust and performance throttles. db.t3.medium (4 GB RAM, higher baseline CPU) prevents this. Upgrade path to t3.large is non-disruptive (brief maintenance window, typically under 5 minutes).</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th>Instance</th><th>Config</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td>db.t3.micro</td><td>Single-AZ</td><td class="cost">&#8377;1,425</td></tr>
+          <tr><td>UAT</td><td>db.t3.small</td><td>Single-AZ</td><td class="cost">&#8377;2,660</td></tr>
+          <tr><td>Prod (Year 1, 1K users)</td><td><strong>db.t3.medium</strong></td><td>Multi-AZ</td><td class="cost">&#8377;9,975</td></tr>
+          <tr><td>Prod (Year 2, 5K users)</td><td>db.t3.medium</td><td>Multi-AZ</td><td class="cost">&#8377;9,975</td></tr>
+          <tr><td>Prod (Year 3, 10K users)</td><td>db.t3.large</td><td>Multi-AZ</td><td class="cost">&#8377;13,300</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-sub-heading">Redis — ElastiCache</div>
+    <p>Serves four functions simultaneously: session token storage, question bank cache (prevents repeat DB queries), rate-limiting counters (OTP abuse prevention), and BullMQ job queue (async email, push, invoice, badge processing).</p>
+    <div class="callout callout-amber">
+      <div class="callout-icon">&#9888;</div>
+      <div class="callout-body">
+        <strong>Single node — accepted risk (no HA)</strong> Redis data is cache-only. A Redis failure means students re-authenticate; no business data is lost. <strong>Mandatory design guardrail:</strong> Exam answer saves and timer state must be written synchronously to PostgreSQL on every answer event. Redis holds a read cache only. BullMQ is reserved for non-critical async jobs (email, push notifications, invoice PDF, badge calculations). HA ElastiCache cluster adds ~&#8377;4,750/month — not justified at startup scale. Recommend revisiting at Year 2.
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th>Instance</th><th>Config</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td>cache.t3.micro</td><td>Single node</td><td class="cost">&#8377;1,235</td></tr>
+          <tr><td>UAT</td><td>cache.t3.small</td><td>Single node</td><td class="cost">&#8377;2,470</td></tr>
+          <tr><td>Prod</td><td>cache.t3.medium</td><td>Single node</td><td class="cost">&#8377;4,940</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-sub-heading">S3 Object Storage</div>
+    <p>Stores audio files (~12 GB initial), PDFs (~10 GB), profile images, and invoice PDFs. Versioning on content bucket only. Glacier lifecycle on invoices older than 12 months (GST 6-year retention) — reduces archive storage cost by ~80%.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th>Use case</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td>Test content + builds</td><td class="cost">&#8377;190</td></tr>
+          <tr><td>UAT</td><td>Test content</td><td class="cost">&#8377;380</td></tr>
+          <tr><td>Prod (initial launch)</td><td>22 GB content + invoices</td><td class="cost">&#8377;1,140</td></tr>
+          <tr><td>Prod (Year 2–3)</td><td>Growing content + invoices</td><td class="cost">&#8377;1,710–&#8377;2,375</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Storage: &#8377;2.19/GB standard · &#8377;0.38/GB Glacier</p>
+
+    <!-- 4.4 COMMUNICATIONS -->
+    <div class="sub-heading" id="s4-4">4.4 Communications</div>
+
+    <div class="sub-sub-heading">Twilio SMS</div>
+    <div class="callout callout-red">
+      <div class="callout-icon">&#9888;</div>
+      <div class="callout-body">
+        <strong>CRITICAL — DLT Registration Required</strong>
+        DLT (Distributed Ledger Technology) registration with TRAI is a regulatory hard requirement before Twilio can send a single SMS to an Indian mobile number. Lead time: 2–4 weeks. This must be initiated on project Day 1. If delayed, the application cannot function for Indian users at go-live. Cost: ~&#8377;17,000 one-time (client-owned).
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Scenario</th><th>Monthly SMS volume</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Year 1 conservative (1K users)</td><td>~2,000</td><td class="cost">&#8377;1,520</td></tr>
+          <tr><td>Year 2 conservative (5K users)</td><td>~10,000</td><td class="cost">&#8377;7,505</td></tr>
+          <tr><td>Year 3 conservative (10K users)</td><td>~20,000</td><td class="cost">&#8377;15,010</td></tr>
+          <tr><td>Year 3 best case (25K users)</td><td>~50,000</td><td class="cost">&#8377;37,525</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">Rate: &#8377;0.75/SMS. Basis: 2 login OTPs/student/month (biometric trusted device handles repeat logins). Signup OTP is one-time.</p>
+
+    <div class="sub-sub-heading">Microsoft 365 SMTP</div>
+    <div class="callout callout-green">
+      <div class="callout-icon">&#10003;</div>
+      <div class="callout-body"><strong>Cost: Zero</strong> All 40 email templates routed through client's existing M365 account (SRS requirement FR-NOTIF-010). Client already owns the licence. M365 standard plans allow 10,000 outbound emails/day — adequate through Year 2. Bulk campaigns at Year 3+ should be staggered across two days. Confirm client's exact M365 plan tier at project kickoff.</div>
+    </div>
+
+    <div class="sub-sub-heading">FCM, APNs, AWS SNS</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Service</th><th>Purpose</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>FCM (Firebase Cloud Messaging)</td><td>Android push notifications</td><td class="cost">Free</td></tr>
+          <tr><td>APNs (Apple Push Notification service)</td><td>iOS push notifications</td><td class="cost">Free</td></tr>
+          <tr><td>AWS SNS</td><td>Routes NestJS calls to FCM + APNs — single integration point</td><td class="cost">~&#8377;95 (all envs)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4.5 PAYMENTS & VIDEO -->
+    <div class="sub-heading" id="s4-5">4.5 Payments and Video</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Service</th><th>Details</th><th class="cost">Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Razorpay</td><td>Payment gateway for all platforms. 2% per successful transaction. Webhook endpoint in NestJS. Live account activation: 3–5 business days.</td><td class="cost">2% per txn</td></tr>
+          <tr><td>YouTube Data API</td><td>Private video embeds via YouTube IFrame Player API (client constraint C-01). All video hosted on YouTube — not self-hosted.</td><td class="cost">Free</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4.6 OPERATIONS & SECURITY -->
+    <div class="sub-heading" id="s4-6">4.6 Operations and Security</div>
+    <div class="sub-sub-heading">CI/CD — CodeBuild + CodePipeline</div>
+    <p>Automated pipelines for NestJS, React (3 portals), and Android APK. <strong>iOS is excluded from cloud CI</strong> — Apple toolchain requires macOS. EC2 Mac instance costs &#8377;76,000+/month. iOS builds are compiled locally on developer Macs and submitted via Fastlane + TestFlight.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td class="cost">&#8377;95</td></tr>
+          <tr><td>UAT</td><td class="cost">&#8377;475</td></tr>
+          <tr><td>Prod</td><td class="cost">&#8377;950</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-sub-heading">CloudWatch — Monitoring &amp; Alerting</div>
+    <p>Collects logs, Fargate metrics, RDS performance metrics, error rates. Alerts configured for: API error rate &gt;1%, RDS CPU &gt;80%, Fargate task crash/restart, Redis memory &gt;85%.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Environment</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Dev</td><td class="cost">Free tier</td></tr>
+          <tr><td>UAT</td><td class="cost">&#8377;475</td></tr>
+          <tr><td>Prod</td><td class="cost">&#8377;1,900</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-sub-heading">Other Operations Services</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Service</th><th>Purpose</th><th class="cost">Monthly cost</th></tr></thead>
+        <tbody>
+          <tr><td>Secrets Manager</td><td>Stores all credentials (Razorpay, Twilio, Firebase, M365, DB). Injected at runtime. No credentials in code.</td><td class="cost">&#8377;190–&#8377;380</td></tr>
+          <tr><td>Route 53</td><td>DNS. Phase 2 adds wildcard record (*.domain.com) for FTO subdomains. Health checks on ALB.</td><td class="cost">&#8377;190–&#8377;285</td></tr>
+          <tr><td>ACM (Certificate Manager)</td><td>Wildcard SSL/TLS certificate. Auto-renews.</td><td class="cost">Free</td></tr>
+          <tr><td>WAF (Web Application Firewall)</td><td>Prod only. OTP endpoint rate limiting, payment endpoint protection, Admin portal IP allowlisting.</td><td class="cost">&#8377;950 (Prod)</td></tr>
+          <tr><td>PgBouncer</td><td>PostgreSQL connection pooler. Fargate sidecar — no additional cost. Handles 500+ concurrent sessions without exhausting DB connections.</td><td class="cost">Free</td></tr>
+          <tr><td>BullMQ</td><td>Async job processing (email, push, invoice PDF, badges) within NestJS using existing Redis. No additional infrastructure.</td><td class="cost">Free</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4.7 ACCOUNTS -->
+    <div class="sub-heading" id="s4-7">4.7 App Store Accounts and Regulatory</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Cost</th><th>Frequency</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td>Apple Developer Account</td><td>&#8377;9,405/year</td><td>Annual</td><td>Client</td></tr>
+          <tr><td>Google Play Console</td><td>&#8377;2,375</td><td>One-time</td><td>Client</td></tr>
+          <tr><td>DLT registration with TRAI</td><td>~&#8377;17,000</td><td>One-time</td><td>Client (Damco assists documentation)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4.8 CHAT -->
+    <div class="sub-heading" id="s4-8">4.8 Chat Support (TBD-032)</div>
+    <p>A chat support FAB is specified in the SRS. Provider is not yet decided (open decision TBD-032).</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Option</th><th class="cost">Monthly cost</th><th>Dev effort</th><th>Recommendation</th></tr></thead>
+        <tbody>
+          <tr class="highlight-row"><td><strong>Custom contact form</strong></td><td class="cost">&#8377;0</td><td>3–5 days</td><td><span class="tag tag-teal">Recommended Phase 1</span></td></tr>
+          <tr><td>Intercom Starter</td><td class="cost">&#8377;7,030</td><td>1–2 days</td><td>Phase 2 upgrade option</td></tr>
+          <tr><td>Zendesk Suite</td><td class="cost">&#8377;5,225</td><td>1–2 days</td><td>Phase 2 upgrade option</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">TBD-032 must be resolved before Phase 1 go-live to avoid a rework cycle.</p>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 5 ─────────────── -->
+<div class="section" id="s5">
+  <div class="section-heading">
+    <span class="sec-num">05</span>
+    <h2>Three-Year Cost Model</h2>
+  </div>
+  <div class="section-body">
+    <p class="footnote" style="margin-bottom:16px">Conversion rate: <strong>1 USD = &#8377;95</strong> (proposal-safe rate as of April 2026). All costs in INR.</p>
+
+    <div class="sub-heading">5.1 Environment cost reference — full uptime</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th class="cost">Dev (full)</th>
+            <th class="cost">Dev (AMC 20%)</th>
+            <th class="cost">UAT (full)</th>
+            <th class="cost">Prod Year 1 (1K)</th>
+            <th class="cost">Prod Year 2 (5K)</th>
+            <th class="cost">Prod Year 3 (10K)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>ECS Fargate</td><td class="cost">&#8377;1,140</td><td class="cost">&#8377;190</td><td class="cost">&#8377;2,375</td><td class="cost">&#8377;12,500</td><td class="cost">&#8377;16,570</td><td class="cost">&#8377;17,490</td></tr>
+          <tr><td>ALB</td><td class="cost">—</td><td class="cost">—</td><td class="cost">—</td><td class="cost">&#8377;1,710</td><td class="cost">&#8377;1,710</td><td class="cost">&#8377;1,710</td></tr>
+          <tr><td>S3 + CloudFront</td><td class="cost">&#8377;475</td><td class="cost">&#8377;95</td><td class="cost">&#8377;760</td><td class="cost">&#8377;3,325</td><td class="cost">&#8377;7,600</td><td class="cost">&#8377;9,975</td></tr>
+          <tr><td>RDS PostgreSQL</td><td class="cost">&#8377;1,425</td><td class="cost">&#8377;285</td><td class="cost">&#8377;2,660</td><td class="cost">&#8377;9,975</td><td class="cost">&#8377;9,975</td><td class="cost">&#8377;13,300</td></tr>
+          <tr><td>ElastiCache Redis</td><td class="cost">&#8377;1,235</td><td class="cost">&#8377;285</td><td class="cost">&#8377;2,470</td><td class="cost">&#8377;4,940</td><td class="cost">&#8377;4,940</td><td class="cost">&#8377;4,940</td></tr>
+          <tr><td>CloudWatch</td><td class="cost">&#8377;0</td><td class="cost">&#8377;0</td><td class="cost">&#8377;475</td><td class="cost">&#8377;1,900</td><td class="cost">&#8377;1,900</td><td class="cost">&#8377;1,900</td></tr>
+          <tr><td>Secrets Manager</td><td class="cost">&#8377;190</td><td class="cost">&#8377;95</td><td class="cost">&#8377;190</td><td class="cost">&#8377;380</td><td class="cost">&#8377;380</td><td class="cost">&#8377;380</td></tr>
+          <tr><td>Route 53</td><td class="cost">&#8377;95</td><td class="cost">&#8377;95</td><td class="cost">&#8377;95</td><td class="cost">&#8377;190</td><td class="cost">&#8377;190</td><td class="cost">&#8377;190</td></tr>
+          <tr><td>CI/CD (CodeBuild)</td><td class="cost">&#8377;95</td><td class="cost">&#8377;95</td><td class="cost">&#8377;475</td><td class="cost">&#8377;950</td><td class="cost">&#8377;950</td><td class="cost">&#8377;950</td></tr>
+          <tr><td>WAF</td><td class="cost">—</td><td class="cost">—</td><td class="cost">—</td><td class="cost">&#8377;950</td><td class="cost">&#8377;950</td><td class="cost">&#8377;950</td></tr>
+          <tr><td>SNS</td><td class="cost">&#8377;0</td><td class="cost">&#8377;0</td><td class="cost">&#8377;0</td><td class="cost">&#8377;95</td><td class="cost">&#8377;95</td><td class="cost">&#8377;95</td></tr>
+          <tr class="total-row"><td><strong>AWS subtotal</strong></td><td class="cost">&#8377;4,655</td><td class="cost">&#8377;1,140</td><td class="cost">&#8377;9,500</td><td class="cost">&#8377;36,915</td><td class="cost">&#8377;43,740</td><td class="cost">&#8377;51,880</td></tr>
+          <tr><td>Twilio SMS</td><td class="cost">&#8377;1,520</td><td class="cost">&#8377;1,520</td><td class="cost">&#8377;1,520</td><td class="cost">&#8377;1,520</td><td class="cost">&#8377;7,505</td><td class="cost">&#8377;15,010</td></tr>
+          <tr class="highlight-row"><td><strong>Total per env</strong></td><td class="cost">&#8377;6,175</td><td class="cost">&#8377;2,660</td><td class="cost">&#8377;11,020</td><td class="cost">&#8377;38,435</td><td class="cost">&#8377;51,245</td><td class="cost">&#8377;66,890</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">5.2 Year 1 — phase-by-phase cost</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Period</th><th>Months</th><th class="cost">Monthly cost</th><th class="cost">Period total</th></tr></thead>
+        <tbody>
+          <tr><td>Phase 1A development</td><td>2.75</td><td class="cost">&#8377;6,175</td><td class="cost">~&#8377;17,000</td></tr>
+          <tr><td>Phase 1A UAT</td><td>0.75</td><td class="cost">&#8377;17,195</td><td class="cost">~&#8377;12,900</td></tr>
+          <tr><td>Phase 1B development</td><td>1.00</td><td class="cost">&#8377;43,090</td><td class="cost">~&#8377;43,100</td></tr>
+          <tr><td>Phase 1B UAT</td><td>0.25</td><td class="cost">&#8377;52,590</td><td class="cost">~&#8377;13,150</td></tr>
+          <tr><td>Phase 2 development</td><td>1.25</td><td class="cost">&#8377;43,090</td><td class="cost">~&#8377;53,850</td></tr>
+          <tr><td>Phase 2 UAT</td><td>0.50</td><td class="cost">&#8377;52,590</td><td class="cost">~&#8377;26,300</td></tr>
+          <tr><td>AMC (months 7.5 to 12)</td><td>4.50</td><td class="cost">&#8377;41,855</td><td class="cost">~&#8377;1,88,350</td></tr>
+          <tr class="total-row"><td><strong>Year 1 total</strong></td><td><strong>12</strong></td><td></td><td class="cost"><strong>~&#8377;3,54,650</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">5.3 Year 2 and Year 3 (full AMC)</div>
+    <div class="two-col">
+      <div>
+        <div class="sub-sub-heading">Year 2 — conservative (5,000 users)</div>
+        <ul>
+          <li>Dev AMC: &#8377;1,140/month</li>
+          <li>UAT quarterly avg: ~&#8377;760/month</li>
+          <li>Prod (Year 2 sizing): &#8377;51,245/month</li>
+          <li>Monthly total: &#8377;53,145</li>
+          <li><strong>Annual total: ~&#8377;6,37,800</strong></li>
+        </ul>
+      </div>
+      <div>
+        <div class="sub-sub-heading">Year 3 — conservative (10,000 users)</div>
+        <ul>
+          <li>Dev AMC: &#8377;1,140/month</li>
+          <li>UAT quarterly avg: ~&#8377;760/month</li>
+          <li>Prod (Year 3 sizing): &#8377;66,890/month</li>
+          <li>Monthly total: &#8377;68,790</li>
+          <li><strong>Annual total: ~&#8377;8,25,500</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-teal" style="margin-top:12px">
+      <div class="callout-icon">&#8377;</div>
+      <div class="callout-body"><strong>Conservative 3-year cloud total: ~&#8377;18,18,000</strong></div>
+    </div>
+
+    <div class="sub-heading">5.4 Best case scenario (Year 1: 5K / Year 2: 10K / Year 3: 25K)</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Year</th><th>Prod sizing</th><th class="cost">Monthly (all envs + Twilio)</th><th class="cost">Annual total</th></tr></thead>
+        <tbody>
+          <tr><td>Year 1 (5K from go-live)</td><td>Year 2 spec</td><td class="cost">~&#8377;42,450 avg</td><td class="cost">~&#8377;3,92,000</td></tr>
+          <tr><td>Year 2 (10K users)</td><td>Year 3 spec</td><td class="cost">&#8377;68,790</td><td class="cost">~&#8377;8,25,500</td></tr>
+          <tr><td>Year 3 (25K users)</td><td>Scaled (t3.large, 5 avg tasks, &#8377;17,100 CDN)</td><td class="cost">~&#8377;89,000</td><td class="cost">~&#8377;10,68,000</td></tr>
+          <tr class="total-row"><td colspan="3"><strong>Best case 3-year cloud total</strong></td><td class="cost"><strong>~&#8377;22,85,500</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">5.5 Summary — 3-year cloud costs</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Scenario</th><th class="cost">Year 1</th><th class="cost">Year 2</th><th class="cost">Year 3</th><th class="cost">3-year total</th></tr></thead>
+        <tbody>
+          <tr><td>Conservative (1K / 5K / 10K)</td><td class="cost">&#8377;3,54,650</td><td class="cost">&#8377;6,37,800</td><td class="cost">&#8377;8,25,500</td><td class="cost bold">&#8377;18,18,000</td></tr>
+          <tr><td>Best case (5K / 10K / 25K)</td><td class="cost">&#8377;3,92,000</td><td class="cost">&#8377;8,25,500</td><td class="cost">&#8377;10,68,000</td><td class="cost bold">&#8377;22,85,500</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 6 ─────────────── -->
+<div class="section" id="s6">
+  <div class="section-heading">
+    <span class="sec-num">06</span>
+    <h2>Infrastructure Management Effort and Cost</h2>
+  </div>
+  <div class="section-body">
+    <p class="footnote" style="margin-bottom:14px">Rate: &#8377;1,600/hour (INR-denominated, not affected by USD/INR conversion rate).</p>
+
+    <div class="sub-heading">6.1 Man-hour breakdown</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Activity</th><th>Type</th><th>Hours</th><th class="cost">Cost (INR)</th></tr></thead>
+        <tbody>
+          <tr><td>AWS account setup, VPC, all services provisioning, CI/CD, DNS, SSL, Firebase project, Twilio DLT assistance</td><td><span class="tag tag-blue">One-time</span></td><td>40 hours</td><td class="cost">&#8377;64,000</td></tr>
+          <tr><td>Development phase monitoring — CI/CD maintenance, Dev/UAT environment management, issue resolution</td><td><span class="tag tag-teal">Monthly (5.75 months)</span></td><td>15 hours/month</td><td class="cost">&#8377;24,000/month</td></tr>
+          <tr><td>UAT phase support — provisioning/teardown, client issue triage, performance checks, go-live prep</td><td><span class="tag tag-teal">Monthly (1.5 months total)</span></td><td>20 hours/month</td><td class="cost">&#8377;32,000/month</td></tr>
+          <tr><td>Go-live cutover — Production DNS cutover, OutSystems retirement coordination, go-live monitoring</td><td><span class="tag tag-blue">One-time</span></td><td>12 hours</td><td class="cost">&#8377;19,200</td></tr>
+          <tr><td>AMC production monitoring — monthly patching, scaling review, security updates, incident response</td><td><span class="tag tag-teal">Monthly (ongoing)</span></td><td>12 hours/month</td><td class="cost">&#8377;19,200/month</td></tr>
+          <tr><td>AMC quarterly UAT cycle — spin up/teardown, regression environment, configuration validation</td><td><span class="tag tag-amber">Quarterly</span></td><td>8 hours/quarter</td><td class="cost">&#8377;12,800/quarter</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">6.2 Year 1 infra management total</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Calculation</th><th class="cost">INR</th><th class="cost">USD equivalent</th></tr></thead>
+        <tbody>
+          <tr><td>Initial setup (one-time)</td><td>40 hrs × &#8377;1,600</td><td class="cost">&#8377;64,000</td><td class="cost">$674</td></tr>
+          <tr><td>Dev phase management</td><td>5.75 months × &#8377;24,000</td><td class="cost">&#8377;1,38,000</td><td class="cost">$1,453</td></tr>
+          <tr><td>UAT phase management</td><td>1.5 months × &#8377;32,000</td><td class="cost">&#8377;48,000</td><td class="cost">$505</td></tr>
+          <tr><td>Go-live cutover (one-time)</td><td>12 hrs × &#8377;1,600</td><td class="cost">&#8377;19,200</td><td class="cost">$202</td></tr>
+          <tr><td>AMC management (4.5 months)</td><td>4.5 months × &#8377;19,200</td><td class="cost">&#8377;86,400</td><td class="cost">$910</td></tr>
+          <tr><td>AMC quarterly UAT (1 cycle in Year 1)</td><td>1 × &#8377;12,800</td><td class="cost">&#8377;12,800</td><td class="cost">$135</td></tr>
+          <tr class="total-row"><td><strong>Year 1 total</strong></td><td></td><td class="cost"><strong>&#8377;3,68,400</strong></td><td class="cost"><strong>$3,878</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">6.3 Year 2 and Year 3</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Year</th><th class="cost">AMC monthly (12 months)</th><th class="cost">Quarterly UAT (4 cycles)</th><th class="cost">Annual total</th><th class="cost">USD equivalent</th></tr></thead>
+        <tbody>
+          <tr><td>Year 2</td><td class="cost">&#8377;2,30,400</td><td class="cost">&#8377;51,200</td><td class="cost">&#8377;2,81,600</td><td class="cost">$2,964</td></tr>
+          <tr><td>Year 3</td><td class="cost">&#8377;2,30,400</td><td class="cost">&#8377;51,200</td><td class="cost">&#8377;2,81,600</td><td class="cost">$2,964</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">6.4 Three-year infra management summary</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Year</th><th class="cost">INR</th><th class="cost">USD</th></tr></thead>
+        <tbody>
+          <tr><td>Year 1</td><td class="cost">&#8377;3,68,400</td><td class="cost">$3,878</td></tr>
+          <tr><td>Year 2</td><td class="cost">&#8377;2,81,600</td><td class="cost">$2,964</td></tr>
+          <tr><td>Year 3</td><td class="cost">&#8377;2,81,600</td><td class="cost">$2,964</td></tr>
+          <tr class="total-row"><td><strong>3-year total</strong></td><td class="cost"><strong>&#8377;9,31,600</strong></td><td class="cost"><strong>$9,806</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-heading">6.5 Combined 3-year TCO (cloud + infra management)</div>
+    <div class="tco-box">
+      <div class="tco-card conservative">
+        <div class="tco-label">Conservative scenario</div>
+        <div class="tco-scenario">1K users Y1 · 5K Y2 · 10K Y3</div>
+        <div class="tco-row"><span class="tco-key">3-year cloud cost</span><span class="tco-val">&#8377;18,18,000</span></div>
+        <div class="tco-row"><span class="tco-key">Infra management</span><span class="tco-val">&#8377;9,31,600</span></div>
+        <div class="tco-total teal">&#8377;27,49,600</div>
+        <div class="footnote">≈ $28,943 USD</div>
+      </div>
+      <div class="tco-card best-case">
+        <div class="tco-label">Best case scenario</div>
+        <div class="tco-scenario">5K users Y1 · 10K Y2 · 25K Y3</div>
+        <div class="tco-row"><span class="tco-key">3-year cloud cost</span><span class="tco-val">&#8377;22,85,500</span></div>
+        <div class="tco-row"><span class="tco-key">Infra management</span><span class="tco-val">&#8377;9,31,600</span></div>
+        <div class="tco-total blue">&#8377;32,17,100</div>
+        <div class="footnote">≈ $33,864 USD</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 7 ─────────────── -->
+<div class="section" id="s7">
+  <div class="section-heading">
+    <span class="sec-num">07</span>
+    <h2>Architecture Decisions Log</h2>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:14px">Every significant infrastructure decision made during pre-sales design. The infra team is asked to validate that these decisions are sound and that no material risk has been overlooked.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Decision</th><th>Chosen approach</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td class="dec-id">01</td><td>Cloud provider</td><td>AWS ap-south-1</td><td>Lowest total cost, pan-India CDN edge, strongest NestJS + PostgreSQL community. &#8377;20,615/month cheaper than Azure in steady state.</td></tr>
+          <tr><td class="dec-id">02</td><td>API hosting</td><td>ECS Fargate (not EC2)</td><td>No idle EC2 cost. Auto-scales 2 to 4 tasks. Task spec: 1 vCPU / 4 GB — required for NestJS monolith running HTTP handlers, BullMQ workers, Prisma ORM, and DGCA timer state logic simultaneously under peak exam load. Fargate handles container lifecycle without managing AMIs or instance patching.</td></tr>
+          <tr><td class="dec-id">03</td><td>Network topology</td><td>Public subnet + security groups (no NAT Gateway)</td><td>NAT Gateway costs &#8377;3,325–&#8377;4,275/month with zero functional benefit at startup scale. Security groups provide adequate isolation. Standard practice for applications at this scale.</td></tr>
+          <tr><td class="dec-id">04</td><td>DB redundancy</td><td>RDS Multi-AZ in Production</td><td>Automatic failover with 60–120 second RTO. Zero data loss. Required for student data and payment records.</td></tr>
+          <tr><td class="dec-id">05</td><td>Redis availability</td><td>Single node, no HA</td><td>Redis is cache-only. A failure causes re-authentication — no business data lost. HA adds ~&#8377;4,750/month. Accepted risk. Revisit at Year 2.</td></tr>
+          <tr><td class="dec-id">06</td><td>Email service</td><td>M365 SMTP exclusively</td><td>SRS FR-NOTIF-010 mandates M365. Client owns licence. Zero additional cost. 10,000 email/day limit adequate through Year 2.</td></tr>
+          <tr><td class="dec-id">07</td><td>iOS CI/CD</td><td>Local developer Mac + Fastlane + TestFlight</td><td>AWS CodeBuild does not support macOS. EC2 Mac instance is &#8377;76,000+/month. Local build is free. TestFlight handles UAT distribution.</td></tr>
+          <tr><td class="dec-id">08</td><td>Android CI/CD</td><td>AWS CodeBuild</td><td>Standard Android build on Linux. &#8377;950/month. APK signing via Secrets Manager.</td></tr>
+          <tr><td class="dec-id">09</td><td>Content delivery</td><td>CloudFront signed URLs</td><td>Audio (25 MB/chapter) and PDF (50 MB) delivery at scale requires CDN caching. Signed URLs enforce access control — authenticated students only. Reduces S3 egress cost significantly.</td></tr>
+          <tr><td class="dec-id">10</td><td>Video hosting</td><td>YouTube private embeds</td><td>Client constraint C-01 in SRS. No self-hosted video. Zero infrastructure cost.</td></tr>
+          <tr><td class="dec-id">11</td><td>Chat FAB</td><td>Custom contact form for Phase 1</td><td>TBD-032 open. Zero cost custom form is the conservative default. Client can upgrade to Intercom or Zendesk during AMC.</td></tr>
+          <tr><td class="dec-id">12</td><td>Connection pooling</td><td>PgBouncer sidecar</td><td>At 500+ concurrent sessions, PostgreSQL connection limit is easily exceeded. PgBouncer pools connections as a sidecar with no additional infrastructure cost.</td></tr>
+          <tr><td class="dec-id">13</td><td>Async job processing</td><td>BullMQ on existing Redis</td><td>Email dispatch, push notifications, invoice PDF generation, badge calculations are async. BullMQ uses existing Redis. No SQS, no RabbitMQ — eliminates one infrastructure dependency.</td></tr>
+          <tr><td class="dec-id">14</td><td>Invoice archival</td><td>S3 Glacier lifecycle after 12 months</td><td>GST compliance requires 6-year invoice retention. Glacier at &#8377;0.38/GB vs standard &#8377;2.19/GB. ~80% cost reduction on archive storage. Lifecycle rule is automated.</td></tr>
+          <tr><td class="dec-id">15</td><td>Multi-tenancy Phase 2</td><td>PostgreSQL Row-Level Security + tenant middleware</td><td>No separate DB per FTO. RLS at schema level is sufficient for estimated 20–50 FTO tenants. Separate DB per tenant would multiply RDS costs by 20×.</td></tr>
+          <tr><td class="dec-id">16</td><td>DLT registration</td><td>Begin at project kickoff</td><td>TRAI DLT is not optional and has a 2–4 week lead time. Deferral directly delays go-live. Must start Day 1.</td></tr>
+          <tr><td class="dec-id">17</td><td>API Gateway</td><td>Excluded</td><td>Unnecessary overhead at this scale. ALB routes directly to Fargate. API Gateway adds cost (&#8377;333/million requests) and latency without functional benefit below 25,000 users.</td></tr>
+          <tr><td class="dec-id">18</td><td>Kubernetes</td><td>Excluded</td><td>ECS Fargate provides equivalent container orchestration without cluster management overhead. Kubernetes is over-engineered for a greenfield app at startup scale.</td></tr>
+          <tr><td class="dec-id">19</td><td>Cross-region failover</td><td>Excluded</td><td>Cost prohibitive at startup scale (doubles RDS and Fargate costs). Single-region Multi-AZ provides adequate availability. Target RTO: 60–120 seconds.</td></tr>
+          <tr style="background:#eff6ff"><td class="dec-id">20</td><td><strong>Exam state persistence model</strong></td><td><strong>Synchronous PostgreSQL write on every answer save</strong></td><td><strong>Mandatory architecture constraint:</strong> Exam answer submissions and timer state must be written synchronously to PostgreSQL on every answer event. Redis holds a read cache only. This design ensures a Redis node failure cannot corrupt or lose in-progress exam data. BullMQ is reserved for non-critical async jobs only.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 8 ─────────────── -->
+<div class="section" id="s8">
+  <div class="section-heading">
+    <span class="sec-num">08</span>
+    <h2>Setup Dependencies and Critical Path</h2>
+  </div>
+  <div class="section-body">
+    <div class="callout callout-red">
+      <div class="callout-icon">&#9888;</div>
+      <div class="callout-body">
+        <strong>CRITICAL — DLT registration with TRAI must begin on Day 1 of the project.</strong>
+        A 4-week delay at project start directly delays go-live by 4 weeks. There is no engineering workaround. Students cannot receive OTP SMS at go-live if DLT is not registered and approved.
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Lead time</th><th>Owner</th><th>Consequence if delayed</th></tr></thead>
+        <tbody>
+          <tr><td><strong>DLT registration with TRAI (~&#8377;17,000)</strong></td><td><span class="tag tag-red">2–4 weeks</span></td><td>Client (Damco assists documentation)</td><td>Students cannot receive OTP SMS at go-live. Login and signup are blocked.</td></tr>
+          <tr><td>Razorpay live account activation</td><td>3–5 business days</td><td>Client</td><td>Payment processing blocked at go-live. No subscriptions or purchases possible.</td></tr>
+          <tr><td>Apple Developer Account</td><td>1–2 business days</td><td>Client</td><td>Cannot distribute iOS app via TestFlight or App Store. iOS UAT cannot proceed.</td></tr>
+          <tr><td>Google Play Console registration</td><td>Immediate</td><td>Client</td><td>Cannot distribute Android app. Direct APK sideloading is a UAT workaround only.</td></tr>
+          <tr><td>AWS account setup and IAM configuration</td><td>Week 1 of project</td><td>Damco DevOps</td><td>Blocks all environment provisioning. Nothing can be built or deployed.</td></tr>
+          <tr><td>Firebase project setup (Crashlytics + Analytics + FCM)</td><td>Week 1 of project</td><td>Damco DevOps</td><td>Blocks Android push notifications and crash reporting from Day 1.</td></tr>
+          <tr><td>M365 SMTP relay configuration</td><td>Week 2 of project</td><td>Client IT + Damco</td><td>Blocks all 40 email templates including OTP email and transactional notifications.</td></tr>
+          <tr><td>YouTube account setup and private video configuration</td><td>Before content upload</td><td>Client</td><td>Study module shows no video content. Must be completed before content population begins.</td></tr>
+          <tr><td>Chat provider decision (TBD-032)</td><td>Before Phase 1 go-live</td><td>Client decision</td><td>FAB shows custom contact form fallback. If Intercom/Zendesk chosen, 5–10 additional dev days required.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 9 ─────────────── -->
+<div class="section" id="s9">
+  <div class="section-heading">
+    <span class="sec-num">09</span>
+    <h2>Items Explicitly Excluded from Scope</h2>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:12px">The following items were considered and deliberately excluded. Documented here so the infra team does not raise them as gaps.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Why excluded</th></tr></thead>
+        <tbody>
+          <tr><td>Live class video platform (Phase 2)</td><td>Platform not yet decided. Microsoft Teams via existing M365 licence is the recommended option at zero additional cost. Separate infra recommendation will be produced when platform is confirmed.</td></tr>
+          <tr><td>Session recording storage (Phase 2 live classes)</td><td>Storage sizing depends on live class platform decision. Excluded until confirmed.</td></tr>
+          <tr><td>Self-hosted video streaming</td><td>Excluded by client constraint C-01. YouTube embeds only.</td></tr>
+          <tr><td>AWS API Gateway</td><td>Over-engineering at this scale. Direct ALB to Fargate is cheaper and simpler.</td></tr>
+          <tr><td>Kubernetes / EKS</td><td>ECS Fargate provides equivalent container management without operational overhead.</td></tr>
+          <tr><td>Cross-region disaster recovery</td><td>Cost prohibitive. Single-region Multi-AZ RDS provides adequate availability at startup scale.</td></tr>
+          <tr><td>Dedicated EC2 Mac instance for iOS CI</td><td>&#8377;76,000+/month. Local developer Mac build is free and sufficient.</td></tr>
+          <tr><td>SendGrid or AWS SES</td><td>M365 SMTP exclusively as mandated by SRS FR-NOTIF-010.</td></tr>
+          <tr><td>Redis HA (ElastiCache Multi-AZ)</td><td>Redis is cache-only. Single node failure is recoverable if exam state is in PostgreSQL. Revisit at Year 2.</td></tr>
+          <tr><td>Separate database per FTO tenant</td><td>PostgreSQL RLS provides schema-level isolation at a fraction of the cost. Separate DB per tenant multiplies costs by 20×.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── SECTION 10 ─────────────── -->
+<div class="section" id="s10">
+  <div class="section-heading">
+    <span class="sec-num">10</span>
+    <h2>Approval Checklist</h2>
+    <span class="badge badge-pending" style="margin-left:auto">Pending</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:16px">Please review each item and check off your sign-off. For any item you cannot approve, document: <strong>the specific concern</strong>, <strong>preferred alternative</strong>, and <strong>estimated cost delta</strong>.</p>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>1. Cloud provider and region</strong>
+        <span>AWS ap-south-1 is the correct cloud and region for this workload</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>2. ECS Fargate sizing</strong>
+        <span>0.25 to 1 vCPU, 0.5 to 4 GB task spec is appropriate for NestJS at 1K to 10K users</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>3. RDS instance sizing</strong>
+        <span>t3.micro Dev · t3.medium Prod Years 1–2 · t3.large Prod Year 3 — all Multi-AZ in Production</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>4. Redis single-node accepted risk</strong>
+        <span>Single node (no HA) is an accepted risk for cache-only workloads at startup scale — contingent on exam state being in PostgreSQL (Decision 20)</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>5. Network topology</strong>
+        <span>Public subnet + security groups (no NAT Gateway) is acceptable for this architecture</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>6. CloudFront egress cost estimate</strong>
+        <span>&#8377;2,850 to &#8377;17,100/month depending on user scale is reasonable for audio and PDF delivery across India</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>7. 3-year cloud cost model accuracy</strong>
+        <span>Conservative &#8377;18,18,000 / best case &#8377;22,85,500 is accurate and defensible for the proposal</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>8. Infra management effort</strong>
+        <span>Year 1: 40 hours setup + 15 hours/month dev + 12 hours/month AMC is appropriate for this architecture</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>9. PgBouncer connection pooling</strong>
+        <span>PgBouncer sidecar approach is acceptable — no separate RDS Proxy required</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>10. BullMQ on existing Redis</strong>
+        <span>BullMQ using the existing Redis instance (no SQS or RabbitMQ) is acceptable for async job processing at this scale</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>11. Exclusion of API Gateway and Kubernetes</strong>
+        <span>Both are correctly excluded as over-engineering for this application and scale</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>12. DLT registration critical path</strong>
+        <span>DLT registration dependency and its Day 1 requirement are understood and acknowledged</span>
+      </label>
+    </div>
+    <div class="checklist-item" onclick="this.classList.toggle('checked'); this.querySelector('input').checked = !this.querySelector('input').checked">
+      <input type="checkbox" onclick="event.stopPropagation()">
+      <label onclick="event.preventDefault()">
+        <strong>13. No material risk overlooked</strong>
+        <span>After reviewing this document, no material infrastructure risk has been overlooked</span>
+      </label>
+    </div>
+
+    <div class="callout callout-blue" style="margin-top:20px">
+      <div class="callout-icon">&#9993;</div>
+      <div class="callout-body">
+        <strong>Please provide your sign-off or comments to the Pre-Sales team (Manish) by return.</strong>
+        Any rejection of a checklist item should include: the specific concern, the preferred alternative, and the estimated cost delta so it can be incorporated into the proposal pricing.
+      </div>
+    </div>
+
+    <hr>
+    <p style="font-size:12px;color:var(--gray-600);text-align:center">
+      Damco Solutions — Pre-Sales &nbsp;·&nbsp; Prepared 2026-04-06 &nbsp;·&nbsp; Version 1.1 &nbsp;·&nbsp; <strong>Internal use only — not for client distribution</strong>
+    </p>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+
+</body>
+</html>
