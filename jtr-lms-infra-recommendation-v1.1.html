@@ -385,7 +385,8 @@ hr { border: none; border-top: 1px solid var(--gray-200); margin: 20px 0; }
   <div class="sidebar-nav">
     <div class="nav-section">
       <a href="#s1" class="nav-link parent"><span class="nav-label">01</span> Project Overview</a>
-      <a href="#s2" class="nav-link parent"><span class="nav-label">02</span> Cloud Recommendation</a>
+      <a href="#s-arch" class="nav-link parent"><span class="nav-label">--</span> Architecture</a>
+     <a href="#s2" class="nav-link parent"><span class="nav-label">02</span> Cloud Recommendation</a>
       <a href="#s3" class="nav-link parent"><span class="nav-label">03</span> Environment Strategy</a>
       <a href="#s4" class="nav-link parent"><span class="nav-label">04</span> Services &amp; Sizing</a>
       <a href="#s4-1" class="nav-link child">4.1 Compute</a>
@@ -501,6 +502,160 @@ hr { border: none; border-top: 1px solid var(--gray-200); margin: 20px 0; }
 </div>
 
 <!-- ─────────────── SECTION 2 ─────────────── -->
+<div class="section" id="s-arch">
+  <div class="section-heading">
+    <span class="sec-num" style="background:var(--teal);">Arch</span>
+    <h2>Architecture Overview</h2>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:16px;color:var(--gray-600);font-size:13px;">
+      Production environment — AWS ap-south-1 (Mumbai). Shows service groupings, VPC boundary,
+      subnet layout, and external integrations. Dev and UAT environments use the same topology
+      at a smaller scale (single-AZ, reduced task count, smaller instance classes).
+    </p>
+    <div style="overflow-x:auto;border:1px solid var(--gray-200);border-radius:8px;background:#f8fafc;padding:12px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="820" viewBox="0 0 980 820" font-family="'Segoe UI',Arial,sans-serif">
+  <defs>
+  <marker id="arr" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <polygon points="0 0, 9 3.5, 0 7" fill="#94a3b8"/>
+  </marker>
+  <marker id="arr-teal" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <polygon points="0 0, 9 3.5, 0 7" fill="#0d9488"/>
+  </marker>
+  <marker id="arr-blue" markerWidth="9" markerHeight="7" refX="9" refY="3.5" orient="auto">
+    <polygon points="0 0, 9 3.5, 0 7" fill="#1d4ed8"/>
+  </marker>
+</defs>
+<rect x="0" y="0" width="980" height="820" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="1.5"/>
+<rect x="0" y="0" width="980" height="44" rx="0" fill="#0f2344" stroke="#0f2344" stroke-width="1.5"/>
+<text x="490" y="16" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">JTR LMS — AWS Production Architecture</text>
+<text x="490" y="33" text-anchor="middle" font-size="10" font-weight="normal" fill="#94a3b8" font-family="'Segoe UI',Arial,sans-serif">Region: ap-south-1 (Mumbai)  |  All environments: Dev · UAT · Prod</text>
+<text x="14" y="80" text-anchor="start" font-size="9" font-weight="bold" fill="#94a3b8" font-family="'Segoe UI',Arial,sans-serif">CLIENTS</text>
+<text x="14" y="175" text-anchor="start" font-size="9" font-weight="bold" fill="#94a3b8" font-family="'Segoe UI',Arial,sans-serif">EDGE / CDN</text>
+<text x="14" y="296" text-anchor="start" font-size="9" font-weight="bold" fill="#94a3b8" font-family="'Segoe UI',Arial,sans-serif">AWS VPC</text>
+<text x="14" y="640" text-anchor="start" font-size="9" font-weight="bold" fill="#94a3b8" font-family="'Segoe UI',Arial,sans-serif">EXTERNAL</text>
+<rect x="120" y="58" width="180" height="68" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="120" y="58" width="180" height="28" rx="8" fill="#1d4ed8"/>
+<rect x="120" y="78" width="180" height="8" fill="#1d4ed8"/>
+<text x="210" y="76" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">Flutter Mobile</text>
+<text x="210" y="102" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">iOS + Android</text>
+<text x="210" y="116" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Drift / SQLite (offline)</text>
+<rect x="390" y="58" width="180" height="68" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="390" y="58" width="180" height="28" rx="8" fill="#1d4ed8"/>
+<rect x="390" y="78" width="180" height="8" fill="#1d4ed8"/>
+<text x="480" y="76" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">React Web</text>
+<text x="480" y="102" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">Student Portal</text>
+<text x="480" y="116" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Browser</text>
+<rect x="660" y="58" width="180" height="68" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+<rect x="660" y="58" width="180" height="28" rx="8" fill="#1d4ed8"/>
+<rect x="660" y="78" width="180" height="8" fill="#1d4ed8"/>
+<text x="750" y="76" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">React Web</text>
+<text x="750" y="102" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">Admin / FTO Portal</text>
+<text x="750" y="116" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Browser</text>
+<rect x="270" y="158" width="220" height="68" rx="8" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.5"/>
+<rect x="270" y="158" width="220" height="28" rx="8" fill="#7c3aed"/>
+<rect x="270" y="178" width="220" height="8" fill="#7c3aed"/>
+<text x="380" y="176" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">CloudFront CDN</text>
+<text x="380" y="202" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">33 India PoPs</text>
+<text x="380" y="216" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Audio · PDF · React builds</text>
+<rect x="560" y="158" width="200" height="68" rx="8" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.5"/>
+<rect x="560" y="158" width="200" height="28" rx="8" fill="#7c3aed"/>
+<rect x="560" y="178" width="200" height="8" fill="#7c3aed"/>
+<text x="660" y="176" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">S3 Buckets</text>
+<text x="660" y="202" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">Media (audio, PDF)</text>
+<text x="660" y="216" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">React static builds</text>
+<rect x="40" y="258" width="900" height="350" rx="12" fill="#f0f9ff" stroke="#0284c7" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="52" y="276" text-anchor="start" font-size="10" font-weight="bold" fill="#0284c7" font-family="'Segoe UI',Arial,sans-serif">VPC  ap-south-1</text>
+<rect x="70" y="284" width="840" height="82" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2" stroke-dasharray="4,3"/>
+<text x="78" y="297" text-anchor="start" font-size="9" font-weight="normal" fill="#16a34a" font-family="'Segoe UI',Arial,sans-serif">Public Subnet</text>
+<rect x="350" y="300" width="280" height="54" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+<rect x="350" y="300" width="280" height="28" rx="8" fill="#16a34a"/>
+<rect x="350" y="320" width="280" height="8" fill="#16a34a"/>
+<text x="490" y="318" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">Application Load Balancer</text>
+<text x="490" y="344" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">HTTPS :443  →  NestJS :3000</text>
+<rect x="70" y="386" width="840" height="204" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.2" stroke-dasharray="4,3"/>
+<text x="78" y="399" text-anchor="start" font-size="9" font-weight="normal" fill="#ea580c" font-family="'Segoe UI',Arial,sans-serif">Private Subnet</text>
+<rect x="100" y="408" width="220" height="164" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/>
+<rect x="100" y="408" width="220" height="28" rx="8" fill="#0d9488"/>
+<rect x="100" y="428" width="220" height="8" fill="#0d9488"/>
+<text x="210" y="426" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">ECS Fargate</text>
+<text x="210" y="452" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">NestJS API</text>
+<text x="210" y="466" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">1 vCPU / 4 GB</text>
+<text x="210" y="486" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Autoscale 2–4 tasks</text>
+<text x="210" y="500" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">BullMQ async jobs</text>
+<text x="210" y="514" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Prisma ORM</text>
+<text x="210" y="528" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">PgBouncer sidecar</text>
+<text x="210" y="542" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Redis session / queue</text>
+<rect x="380" y="408" width="220" height="164" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+<rect x="380" y="408" width="220" height="28" rx="8" fill="#1d4ed8"/>
+<rect x="380" y="428" width="220" height="8" fill="#1d4ed8"/>
+<text x="490" y="426" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">RDS PostgreSQL</text>
+<text x="490" y="452" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">db.t3.medium  Multi-AZ</text>
+<text x="490" y="466" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Prod Year 1 ~₹9,975/mo</text>
+<text x="490" y="486" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Primary + Standby AZ</text>
+<text x="490" y="500" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">30 GB gp3 storage</text>
+<text x="490" y="514" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Automated backups 7d</text>
+<text x="490" y="528" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Upgrade: t3.large Y3</text>
+<text x="490" y="542" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Row-Level Security (P2)</text>
+<rect x="660" y="408" width="220" height="164" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+<rect x="660" y="408" width="220" height="28" rx="8" fill="#dc2626"/>
+<rect x="660" y="428" width="220" height="8" fill="#dc2626"/>
+<text x="770" y="426" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" font-family="'Segoe UI',Arial,sans-serif">ElastiCache Redis</text>
+<text x="770" y="452" text-anchor="middle" font-size="10" font-weight="normal" fill="#374151" font-family="'Segoe UI',Arial,sans-serif">cache.t3.micro</text>
+<text x="770" y="466" text-anchor="middle" font-size="10" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Prod ~₹2,185/mo</text>
+<text x="770" y="486" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Session cache</text>
+<text x="770" y="500" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Question cache</text>
+<text x="770" y="514" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Rate limiting</text>
+<text x="770" y="528" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">BullMQ job queue</text>
+<text x="770" y="542" text-anchor="middle" font-size="9" font-weight="normal" fill="#dc2626" font-family="'Segoe UI',Arial,sans-serif">⚠ Exam state → PG only</text>
+<rect x="765" y="266" width="165" height="40" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="1"/>
+<text x="847" y="280" text-anchor="middle" font-size="9" font-weight="bold" fill="#92400e" font-family="'Segoe UI',Arial,sans-serif">CodeBuild + CodePipeline</text>
+<text x="847" y="293" text-anchor="middle" font-size="9" font-weight="normal" fill="#92400e" font-family="'Segoe UI',Arial,sans-serif">NestJS · React · Android CI/CD</text>
+<rect x="50" y="634" width="140" height="62" rx="6" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="120" y="651" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">M365 SMTP</text>
+<text x="120" y="664" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Email (40 templates)</text>
+<rect x="205" y="634" width="145" height="62" rx="6" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="277" y="651" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Twilio</text>
+<text x="277" y="664" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">SMS OTP (DLT reg.)</text>
+<rect x="365" y="634" width="155" height="62" rx="6" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="442" y="651" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">SNS → FCM/APNs</text>
+<text x="442" y="664" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Push notifications</text>
+<rect x="535" y="634" width="140" height="62" rx="6" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="605" y="651" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Razorpay</text>
+<text x="605" y="664" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Payments</text>
+<rect x="690" y="634" width="130" height="62" rx="6" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="755" y="651" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">YouTube</text>
+<text x="755" y="664" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Video embeds (C-01)</text>
+<rect x="835" y="634" width="105" height="62" rx="6" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="887" y="651" text-anchor="middle" font-size="10" font-weight="bold" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Firebase</text>
+<text x="887" y="664" text-anchor="middle" font-size="9" font-weight="normal" fill="#6b7280" font-family="'Segoe UI',Arial,sans-serif">Crash · Analytics</text>
+<rect x="40" y="714" width="900" height="36" rx="8" fill="#0f2344" stroke="#0f2344" stroke-width="1.5"/>
+<text x="490" y="726" text-anchor="middle" font-size="10" font-weight="normal" fill="#e2e8f0" font-family="'Segoe UI',Arial,sans-serif">Prod Year 1 (incl. Twilio): ₹38,435/month   |   Conservative 3-year TCO: ₹27,49,600   |   Best case: ₹32,17,100</text>
+<text x="490" y="742" text-anchor="middle" font-size="9" font-weight="normal" fill="#94a3b8" font-family="'Segoe UI',Arial,sans-serif">Conversion: ₹95 = $1   |   Conservative $28,943   |   Best case $33,864</text>
+<line x1="210" y1="126" x2="340" y2="158" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="480" y1="126" x2="420" y2="158" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="750" y1="126" x2="530" y2="158" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="490" y1="192" x2="560" y2="192" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="380" y1="226" x2="490" y2="300" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="490" y1="354" x2="210" y2="408" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="320" y1="490" x2="380" y2="490" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="320" y1="516" x2="660" y2="516" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="150" y1="608" x2="120" y2="634" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="250" y1="608" x2="277" y2="634" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="490" y1="608" x2="442" y2="634" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="490" y1="608" x2="605" y2="634" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="750" y1="608" x2="755" y2="634" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+<line x1="850" y1="608" x2="887" y2="634" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+</svg>
+    </div>
+    <p style="margin-top:12px;font-size:12px;color:var(--gray-400);">
+      Note: iOS Flutter builds are done locally on developer Mac (Apple developer account constraint). 
+      All other CI/CD runs on AWS CodeBuild + CodePipeline. Video content is YouTube private embeds 
+      per client constraint C-01 in SRS — no self-hosted video.
+    </p>
+  </div>
+</div>
+
 <div class="section" id="s2">
   <div class="section-heading">
     <span class="sec-num">02</span>
