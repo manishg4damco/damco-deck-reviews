@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LensKart — D365 Procurement Workflows | Damco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--m:#94122C;--o:#FF9408;--b:#FBEEDB;--w:#fff;--g:#f8fafc;--br:#e5e7eb;--tx:#1e293b;--ts:#64748b;--dm:#5a0a18;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',-apple-system,sans-serif;background:#111827;overflow:hidden;width:100vw;height:100vh;}
+#deck{position:fixed;top:0;left:0;width:calc(100vw / 1.5);height:calc(100vh / 1.5);transform:scale(1.5);transform-origin:top left;}
+
+/* ── Base slide ── */
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s ease,transform .4s ease;transform:translateY(12px);overflow:hidden;background:var(--g);}
+.slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
+
+/* ── Nav ── */
+#nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.65);backdrop-filter:blur(12px);border-radius:100px;padding:8px 18px;z-index:999;}
+#nav button{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;cursor:pointer;width:28px;height:28px;border-radius:50%;font-size:13px;display:flex;align-items:center;justify-content:center;opacity:.8;transition:all .2s;}
+#nav button:hover{opacity:1;background:rgba(255,255,255,.15);}
+#counter{color:rgba(255,255,255,.7);font-size:12px;font-weight:500;min-width:52px;text-align:center;}
+
+/* ── Slide Header ── */
+.sh{padding:16px 44px 0;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.sh-badge{background:var(--m);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:3px;white-space:nowrap;}
+.sh-title{font-size:20px;font-weight:700;color:var(--tx);white-space:nowrap;}
+.sh-line{flex:1;height:2px;background:var(--br);}
+
+/* ── Slide Body ── */
+.sb{flex:1;padding:12px 44px 14px;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── Card ── */
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 12px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);}
+
+/* ── Slide Footer ── */
+.sf{height:26px;background:#fff;border-top:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;padding:0 44px;flex-shrink:0;}
+.sf-brand{font-size:10px;font-weight:700;color:var(--ts);letter-spacing:.08em;text-transform:uppercase;}
+.sf-brand b{color:var(--m);}
+.sf-conf{font-size:10px;color:#d1d5db;}
+
+/* ═══════════════════════════
+   SLIDE 1 — TITLE
+═══════════════════════════ */
+.sl-title{background:linear-gradient(140deg,#94122C 0%,#5a0a18 52%,#1e0409 100%);justify-content:center;align-items:center;text-align:center;}
+.sl-title::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 25% 50%,rgba(255,148,8,.13),transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.05),transparent 50%);}
+.t-logo{position:absolute;top:24px;right:36px;font-size:12px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.12em;text-transform:uppercase;}
+.t-logo b{color:var(--o);}
+.t-tag{position:relative;display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 16px;border-radius:100px;margin-bottom:18px;}
+.t-main{position:relative;font-size:46px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:10px;max-width:740px;}
+.t-main b{color:var(--o);}
+.t-sub{position:relative;font-size:16px;color:rgba(255,255,255,.6);margin-bottom:28px;}
+.t-chips{position:relative;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.t-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:11.5px;font-weight:500;padding:5px 14px;border-radius:100px;}
+.t-date{position:absolute;bottom:62px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;}
+
+/* ═══════════════════════════
+   SLIDE 2 — AGENDA
+═══════════════════════════ */
+.ag-intro{font-size:13px;color:var(--ts);line-height:1.65;margin-bottom:14px;flex-shrink:0;padding:12px 18px;background:#fff;border-radius:9px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.ag-intro b{color:var(--tx);}
+.ag-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ag-item{background:#fff;border-radius:10px;padding:16px 18px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.ag-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ag-num{font-size:10px;font-weight:700;color:var(--ts);letter-spacing:.06em;margin-bottom:3px;text-transform:uppercase;}
+.ag-text{font-size:13.5px;font-weight:700;color:var(--tx);line-height:1.3;}
+.ag-sub{font-size:11px;color:var(--ts);margin-top:4px;line-height:1.5;}
+.ag-footer{margin-top:14px;padding:12px 18px;background:#fff;border-radius:9px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.ag-footer-item{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ts);}
+.ag-footer-dot{width:8px;height:8px;border-radius:50%;background:var(--o);}
+
+/* ═══════════════════════════
+   SLIDE 3 — CONTEXT
+═══════════════════════════ */
+.ctx-split{display:grid;grid-template-columns:1fr 1.85fr;gap:12px;flex:1;}
+.ctx-hero{background:linear-gradient(155deg,var(--m) 0%,var(--dm) 100%);border-radius:12px;padding:22px 20px;color:#fff;display:flex;flex-direction:column;gap:14px;}
+.ch-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.ch-title{font-size:21px;font-weight:700;line-height:1.3;}
+.ch-stat{padding:10px 0;border-top:1px solid rgba(255,255,255,.15);}
+.ch-num{font-size:28px;font-weight:800;color:var(--o);line-height:1;}
+.ch-slabel{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;}
+.ctx-right{display:flex;flex-direction:column;gap:9px;}
+.ctx-card{background:#fff;border-radius:9px;padding:12px 16px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);display:flex;gap:12px;align-items:flex-start;}
+.ctx-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci-blue{background:#dbeafe;} .ci-orange{background:#fff7ed;} .ci-green{background:#f0fdf4;} .ci-purple{background:#f5f3ff;}
+.ctx-label{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.ctx-text{font-size:11.5px;color:var(--ts);line-height:1.5;}
+
+/* ═══════════════════════════
+   SLIDE 4 — PAIN
+═══════════════════════════ */
+.pain-split{display:grid;grid-template-columns:36% 64%;flex:1;border-radius:12px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.08);}
+.pain-hero{background:linear-gradient(155deg,var(--m) 0%,var(--dm) 100%);padding:28px 22px;display:flex;flex-direction:column;justify-content:center;color:#fff;}
+.ph-icon{width:52px;height:52px;background:rgba(255,255,255,.13);border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.ph-title{font-size:24px;font-weight:800;line-height:1.25;margin-bottom:10px;}
+.ph-sub{font-size:12px;color:rgba(255,255,255,.65);line-height:1.65;}
+.pain-cards{background:#fafafa;padding:18px 22px;display:flex;flex-direction:column;gap:9px;justify-content:center;}
+.pain-card{background:#fff;border-radius:9px;padding:11px 15px;display:flex;gap:12px;align-items:flex-start;border-left:3px solid var(--m);box-shadow:0 1px 6px rgba(0,0,0,.05);}
+.pain-num{width:22px;height:22px;background:var(--m);color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.pain-title{font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.pain-desc{font-size:11px;color:var(--ts);line-height:1.55;}
+
+/* ═══════════════════════════
+   SLIDE 5 — HOW D365 WORKS
+═══════════════════════════ */
+.flow-section{flex:1;display:flex;flex-direction:column;gap:12px;}
+.flow-block{background:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.flow-blabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ts);margin-bottom:10px;}
+.flow-row{display:flex;align-items:center;gap:0;overflow-x:auto;}
+.fn{height:38px;display:flex;align-items:center;justify-content:center;padding:0 18px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap;flex-shrink:0;}
+.fn.first{clip-path:polygon(0 0,calc(100% - 11px) 0,100% 50%,calc(100% - 11px) 100%,0 100%);border-radius:6px 0 0 6px;}
+.fn.mid{clip-path:polygon(11px 0,calc(100% - 11px) 0,100% 50%,calc(100% - 11px) 100%,11px 100%,0 50%);margin-left:-2px;}
+.fn.last{clip-path:polygon(11px 0,100% 0,100% 100%,11px 100%,0 50%);border-radius:0 6px 6px 0;margin-left:-2px;}
+.fc-m{background:var(--m);} .fc-o{background:var(--o);} .fc-b{background:#2563eb;} .fc-g{background:#16a34a;} .fc-p{background:#7c3aed;} .fc-a{background:#d97706;} .fc-t{background:#475569;}
+.flow-statuses{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.fst{font-size:10px;padding:3px 10px;border-radius:100px;font-weight:600;}
+.fst-pend{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.fst-app{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+.fst-rej{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+.fst-prog{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
+.fst-hold{background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;}
+.flow-note{background:var(--b);border-radius:7px;padding:8px 14px;font-size:11px;color:var(--m);font-weight:500;margin-top:10px;}
+
+/* ═══════════════════════════
+   SLIDE 6 — SOLUTION
+═══════════════════════════ */
+.sol-top{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;flex-shrink:0;}
+.sol-hero{background:linear-gradient(135deg,var(--m) 0%,var(--dm) 100%);border-radius:10px;padding:18px 22px;color:#fff;}
+.sol-hero-title{font-size:17px;font-weight:700;margin-bottom:7px;}
+.sol-hero-text{font-size:11.5px;color:rgba(255,255,255,.7);line-height:1.65;}
+.sol-layers{background:#fff;border-radius:10px;padding:18px 22px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.sl-title2{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px;}
+.sl-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11.5px;color:var(--ts);}
+.sl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex:1;}
+.feat-card{background:#fff;border-radius:9px;padding:13px 15px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:8px;}
+.feat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.feat-title{font-size:12px;font-weight:700;color:var(--tx);line-height:1.3;}
+.feat-desc{font-size:10.5px;color:var(--ts);line-height:1.5;}
+
+/* ═══════════════════════════
+   SLIDE 7 — USER JOURNEYS
+═══════════════════════════ */
+.journey-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;}
+.j-card{background:#fff;border-radius:11px;box-shadow:0 1px 12px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);display:flex;flex-direction:column;overflow:hidden;}
+.j-head{padding:14px 16px 12px;border-bottom:1px solid var(--br);}
+.j-badge{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;margin-bottom:5px;}
+.jb-a{background:#fee2e2;color:#dc2626;} .jb-b{background:#dbeafe;color:#1d4ed8;} .jb-c{background:#fff7ed;color:#c2410c;}
+.j-title{font-size:14px;font-weight:700;color:var(--tx);}
+.j-sub{font-size:10.5px;color:var(--ts);margin-top:1px;}
+.j-steps{padding:12px 16px;flex:1;display:flex;flex-direction:column;gap:0;}
+.jstep{display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;position:relative;}
+.jstep:not(:last-child)::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--br);}
+.jn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:#fff;}
+.jn-a{background:var(--m);} .jn-b{background:#2563eb;} .jn-c{background:#d97706;}
+.jstep-text{font-size:11px;color:var(--tx);line-height:1.5;padding-top:4px;}
+.j-outcome{margin:0 16px 12px;background:var(--b);border-radius:6px;padding:7px 11px;font-size:10.5px;color:var(--m);font-weight:600;}
+
+/* ═══════════════════════════
+   SLIDE 8 — ARCHITECTURE
+═══════════════════════════ */
+.arch-layout{flex:1;display:flex;flex-direction:column;gap:6px;}
+.arch-layer{border-radius:8px;padding:9px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.al-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.al-label{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;width:100px;flex-shrink:0;}
+.al-items{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
+.al-item{font-size:11px;font-weight:500;padding:3px 11px;border-radius:100px;white-space:nowrap;}
+.al-conn{width:2px;height:7px;background:var(--br);margin-left:45px;flex-shrink:0;}
+/* Layer colors */
+.al-u{background:#dbeafe;} .al-u .al-label{color:#1d4ed8;} .al-u .al-icon{background:#2563eb;} .al-u .al-item{background:#bfdbfe;color:#1e40af;}
+.al-a{background:#fff7ed;} .al-a .al-label{color:#c2410c;} .al-a .al-icon{background:var(--o);} .al-a .al-item{background:#fed7aa;color:#c2410c;}
+.al-f{background:#f1f5f9;} .al-f .al-label{color:#475569;} .al-f .al-icon{background:#475569;} .al-f .al-item{background:#e2e8f0;color:#334155;}
+.al-p{background:#fef9c3;} .al-p .al-label{color:#92400e;} .al-p .al-icon{background:#d97706;} .al-p .al-item{background:#fef08a;color:#78350f;}
+.al-d{background:var(--m);} .al-d .al-label{color:rgba(255,255,255,.7);} .al-d .al-icon{background:rgba(0,0,0,.2);} .al-d .al-item{background:rgba(255,255,255,.15);color:#fff;}
+.al-n{background:#f0fdf4;} .al-n .al-label{color:#15803d;} .al-n .al-icon{background:#16a34a;} .al-n .al-item{background:#bbf7d0;color:#14532d;}
+
+/* ═══════════════════════════
+   SLIDE 9 — DATA FLOW
+═══════════════════════════ */
+.df-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;}
+.df-card{border-radius:11px;overflow:hidden;box-shadow:0 1px 12px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.05);display:flex;flex-direction:column;}
+.df-head{padding:14px 16px;border-bottom:1px solid rgba(0,0,0,.06);}
+.df-badge{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.df-title{font-size:14px;font-weight:700;margin-bottom:3px;}
+.df-sub{font-size:10.5px;color:var(--ts);}
+.df-body{padding:12px 16px;flex:1;display:flex;flex-direction:column;gap:8px;background:#fff;}
+.df-step{display:flex;gap:9px;align-items:flex-start;}
+.dfsn{width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.df-step-content{flex:1;}
+.df-step-text{font-size:11px;color:var(--tx);line-height:1.5;}
+.df-step-code{font-family:'Consolas',monospace;font-size:9px;background:#f1f5f9;color:#475569;padding:3px 7px;border-radius:3px;margin-top:3px;display:block;word-break:break-all;white-space:pre-wrap;line-height:1.5;}
+/* Path A — Blue */
+.df-a .df-head{background:#f0f7ff;} .df-a .df-badge{color:#2563eb;} .df-a .df-title{color:#1e40af;} .df-a .dfsn{background:#2563eb;}
+/* Path B — Orange */
+.df-b .df-head{background:#fff8f0;} .df-b .df-badge{color:var(--o);} .df-b .df-title{color:#92400e;} .df-b .dfsn{background:var(--o);}
+/* Path C — Green */
+.df-c .df-head{background:#f0fdf4;} .df-c .df-badge{color:#16a34a;} .df-c .df-title{color:#14532d;} .df-c .dfsn{background:#16a34a;}
+
+/* ═══════════════════════════
+   SLIDE 10 — POC SCOPE
+═══════════════════════════ */
+.poc-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;flex:1;}
+.poc-card{background:#fff;border-radius:11px;padding:18px 20px;box-shadow:0 1px 12px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);}
+.poc-sec-title{font-size:11px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--b);}
+.poc-item{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--br);}
+.poc-item:last-child{border-bottom:none;}
+.poc-check{width:16px;height:16px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.poc-text{font-size:11.5px;color:var(--tx);line-height:1.4;}
+.tl-card{background:#fff;border-radius:11px;padding:18px 20px;box-shadow:0 1px 12px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:2px;}
+.tl-week{padding:8px 0;border-bottom:1px solid var(--br);flex:1;}
+.tl-week:last-child{border-bottom:none;}
+.tl-w-label{font-size:11px;font-weight:700;color:var(--m);margin-bottom:6px;}
+.tl-task{font-size:10.5px;color:var(--ts);margin-bottom:3px;display:flex;gap:6px;align-items:center;}
+.tl-task::before{content:'';width:4px;height:4px;background:var(--o);border-radius:50%;flex-shrink:0;}
+.poc-so{background:linear-gradient(155deg,var(--m) 0%,var(--dm) 100%);border-radius:11px;padding:18px 20px;color:#fff;display:flex;flex-direction:column;}
+.so-title{font-size:14px;font-weight:700;margin-bottom:3px;}
+.so-sub{font-size:10.5px;color:rgba(255,255,255,.55);margin-bottom:14px;}
+.so-person{background:rgba(255,255,255,.1);border-radius:8px;padding:10px 13px;margin-bottom:8px;}
+.so-person-role{font-size:11px;font-weight:700;}
+.so-person-name{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:1px;}
+.so-crit-title{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:5px;margin-top:4px;}
+.so-crit{font-size:10.5px;color:rgba(255,255,255,.55);line-height:1.6;}
+
+/* ═══════════════════════════
+   SLIDE 11 — WHY DAMCO
+═══════════════════════════ */
+.damco-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:12px;flex:1;}
+.damco-left{display:flex;flex-direction:column;gap:9px;}
+.stat-card{background:#fff;border-radius:9px;padding:14px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);border-left:4px solid var(--o);}
+.stat-num{font-size:30px;font-weight:800;color:var(--m);line-height:1;margin-bottom:3px;}
+.stat-label{font-size:11.5px;color:var(--ts);}
+.damco-right{display:flex;flex-direction:column;gap:9px;}
+.team-card{background:#fff;border-radius:9px;padding:16px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);flex:1;}
+.team-title{font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.team-title::before{content:'';width:3px;height:14px;background:var(--m);border-radius:2px;}
+.team-member{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--br);}
+.team-member:last-child{border-bottom:none;}
+.team-av{width:32px;height:32px;border-radius:50%;background:var(--m);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.team-name{font-size:11.5px;font-weight:600;color:var(--tx);}
+.team-role{font-size:10.5px;color:var(--ts);margin-top:1px;}
+.clients-card{background:#fff;border-radius:9px;padding:16px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.clients-title{font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:9px;display:flex;align-items:center;gap:8px;}
+.clients-title::before{content:'';width:3px;height:14px;background:var(--o);border-radius:2px;}
+.client-chip{display:inline-block;background:var(--b);color:var(--m);font-size:11px;font-weight:600;padding:3px 11px;border-radius:100px;margin:3px 3px 3px 0;}
+
+/* ═══════════════════════════
+   SLIDE 12 — BEYOND POC
+═══════════════════════════ */
+.rm-layout{flex:1;display:flex;flex-direction:column;gap:8px;}
+.rm-row{display:flex;gap:9px;}
+.rm-item{flex:1;background:#fff;border-radius:9px;padding:13px 16px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);border-top:3px solid var(--br);}
+.rm-phase{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.rm-title{font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.rm-value{font-size:11px;color:var(--ts);}
+.rm-now{border-top-color:var(--m);} .rm-now .rm-phase{color:var(--m);}
+.rm-hc{border-top-color:#16a34a;} .rm-hc .rm-phase{color:#16a34a;}
+.rm-2a{border-top-color:#2563eb;} .rm-2a .rm-phase{color:#2563eb;}
+.rm-2b{border-top-color:#7c3aed;} .rm-2b .rm-phase{color:#7c3aed;}
+.rm-2c{border-top-color:var(--o);} .rm-2c .rm-phase{color:#d97706;}
+.amc-card{background:linear-gradient(135deg,var(--m) 0%,var(--dm) 100%);border-radius:9px;padding:13px 18px;color:#fff;display:flex;align-items:center;gap:12px;}
+.amc-icon{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.amc-title{font-size:13px;font-weight:700;}
+.amc-value{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;}
+
+/* ═══════════════════════════
+   SLIDE 13 — NEXT STEPS
+═══════════════════════════ */
+.ns-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;}
+.ns-steps{display:flex;flex-direction:column;gap:9px;}
+.ns-item{background:#fff;border-radius:9px;padding:13px 16px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.ns-num{width:30px;height:30px;background:var(--m);color:#fff;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ns-title{font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.ns-sub{font-size:11px;color:var(--ts);line-height:1.5;}
+.ns-contact{background:linear-gradient(155deg,var(--m) 0%,var(--dm) 100%);border-radius:11px;padding:22px 22px;color:#fff;display:flex;flex-direction:column;gap:14px;}
+.nc-title{font-size:18px;font-weight:700;}
+.nc-sub{font-size:11.5px;color:rgba(255,255,255,.6);}
+.nc-detail{background:rgba(255,255,255,.1);border-radius:8px;padding:11px 14px;display:flex;gap:11px;align-items:center;}
+.nc-icon{width:34px;height:34px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nc-label{font-size:9.5px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1px;}
+.nc-val{font-size:12.5px;font-weight:600;}
+
+/* ═══════════════════════════
+   SLIDE 5 — WORKFLOW ENGINE
+═══════════════════════════ */
+.wfe-split{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;flex:1;}
+.wfe-caps{display:flex;flex-direction:column;gap:8px;}
+.wfe-cap{background:#fff;border-radius:9px;padding:12px 16px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);border-left:3px solid var(--o);flex:1;}
+.wfe-cap-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:3px;}
+.wfe-cap-desc{font-size:11px;color:var(--ts);line-height:1.5;}
+.wfe-states{background:#fff;border-radius:9px;padding:14px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);display:flex;flex-direction:column;}
+.wfe-slabel{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.wfe-state{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--br);}
+.wfe-state:last-child{border-bottom:none;}
+.wfe-badge{font-size:10px;font-weight:700;padding:2px 10px;border-radius:100px;white-space:nowrap;flex-shrink:0;margin-top:1px;min-width:72px;text-align:center;}
+.ws-draft{background:#f1f5f9;color:#475569;}
+.ws-sub{background:#dbeafe;color:#1d4ed8;}
+.ws-rev{background:#fef9c3;color:#92400e;}
+.ws-app{background:#f0fdf4;color:#15803d;}
+.ws-rej{background:#fee2e2;color:#dc2626;}
+.ws-hold{background:#f5f3ff;color:#7c3aed;}
+.ws-qry{background:#eff6ff;color:#2563eb;}
+.wfe-state-desc{font-size:11px;color:var(--ts);line-height:1.5;}
+
+/* ═══════════════════════════
+   SLIDE 6 — LIFECYCLE FLOWS
+═══════════════════════════ */
+.lc-flows{display:flex;flex-direction:column;gap:10px;flex:1;}
+.lc-section{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);display:flex;flex-direction:column;flex:1;}
+.lc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+.lc-row{display:flex;align-items:center;gap:3px;flex-wrap:wrap;}
+.lc-box{padding:7px 12px;border-radius:7px;font-size:10.5px;font-weight:600;text-align:center;white-space:nowrap;}
+.lc-arr{color:#94a3b8;font-size:16px;line-height:1;flex-shrink:0;}
+.lc-note{background:var(--b);border-radius:7px;padding:9px 14px;font-size:11px;color:var(--m);font-weight:500;margin-top:10px;flex-shrink:0;}
+.lc-start{background:#e2e8f0;color:#334155;}
+.lc-wf{background:#fee2e2;color:#991b1b;}
+.lc-po{background:#dbeafe;color:#1e40af;}
+.lc-grn{background:#fef9c3;color:#78350f;}
+.lc-inv{background:#f5f3ff;color:#5b21b6;}
+.lc-match{background:#d1fae5;color:#065f46;}
+.lc-pay{background:#f0fdf4;color:#15803d;}
+.lc-svc{background:#fff7ed;color:#9a3412;}
+
+/* ═══════════════════════════
+   SLIDE 7 — SOLUTION CONCEPT
+═══════════════════════════ */
+.sc-intro{background:var(--b);border-radius:8px;padding:10px 18px;font-size:12px;font-weight:600;color:var(--m);margin-bottom:10px;flex-shrink:0;line-height:1.5;}
+.sc-conn{display:flex;align-items:center;gap:8px;padding:3px 0 3px 46px;flex-shrink:0;}
+.sc-conn-label{font-size:10px;font-weight:600;color:var(--ts);background:#f1f5f9;border-radius:100px;padding:2px 10px;}
+.sc-conn-line{flex:1;height:1px;background:var(--br);}
+
+/* ═══════════════════════════
+   SLIDE 12 — SECURITY & TECH
+═══════════════════════════ */
+.sec-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:12px;flex:1;}
+.auth-card{background:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.sec-label{font-size:10px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+.auth-step{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--br);}
+.auth-step:last-child{border-bottom:none;}
+.auth-n{width:26px;height:26px;border-radius:50%;background:var(--m);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.auth-info{flex:1;}
+.auth-title{font-size:12px;font-weight:700;color:var(--tx);margin-bottom:2px;}
+.auth-desc{font-size:10.5px;color:var(--ts);line-height:1.5;}
+.sec-right{display:flex;flex-direction:column;gap:10px;}
+.ts-card{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.ts-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--br);font-size:11px;}
+.ts-row:last-child{border-bottom:none;}
+.ts-layer{color:var(--ts);font-weight:500;}
+.ts-tech{color:var(--tx);font-weight:600;}
+.rbac-card{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.rbac-row{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--br);}
+.rbac-row:last-child{border-bottom:none;}
+.rbac-role{font-size:11px;font-weight:700;color:var(--tx);width:72px;flex-shrink:0;}
+.rbac-view{font-size:10.5px;color:var(--ts);flex:1;}
+.rbac-chip{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;flex-shrink:0;}
+
+/* ═══════════════════════════
+   SLIDE 15 — PARTNERSHIP ROADMAP
+═══════════════════════════ */
+.prm-layout{flex:1;display:flex;flex-direction:column;gap:10px;}
+.prm-timeline{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.prm-col{border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;}
+.prm-now{background:linear-gradient(155deg,var(--m),var(--dm));color:#fff;}
+.prm-adv{background:#f0fdf4;border:1px solid #bbf7d0;}
+.prm-enh{background:#eff6ff;border:1px solid #bfdbfe;}
+.prm-when{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px;}
+.prm-now .prm-when{color:rgba(255,255,255,.55);}
+.prm-adv .prm-when{color:#15803d;}
+.prm-enh .prm-when{color:#2563eb;}
+.prm-phase{font-size:14px;font-weight:700;margin-bottom:4px;}
+.prm-now .prm-phase{color:#fff;}
+.prm-adv .prm-phase{color:#14532d;}
+.prm-enh .prm-phase{color:#1e40af;}
+.prm-line{font-size:11px;line-height:1.7;display:flex;gap:6px;align-items:flex-start;}
+.prm-now .prm-line{color:rgba(255,255,255,.75);}
+.prm-adv .prm-line{color:#166534;}
+.prm-enh .prm-line{color:#1d4ed8;}
+.prm-line::before{content:'';width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;margin-top:6px;}
+.prm-ns-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.prm-ns-item{background:#fff;border-radius:9px;padding:11px 13px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);}
+.prm-ns-n{width:24px;height:24px;background:var(--m);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:7px;}
+.prm-ns-title{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:2px;line-height:1.3;}
+.prm-ns-sub{font-size:9.5px;color:var(--ts);line-height:1.4;}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- ════════════════════════════════════════
+     SLIDE 1 — TITLE
+════════════════════════════════════════ -->
+<div class="slide sl-title active" id="s1">
+  <div class="t-logo">DAMCO <b>Solutions</b></div>
+  <div class="t-tag">Capability &amp; Solution Presentation</div>
+  <h1 class="t-main">Procurement <b>Approval</b><br>Workflows</h1>
+  <p class="t-sub">D365 F&amp;O: Mobile-First Wrapper Application</p>
+  <div class="t-chips">
+    <span class="t-chip">Power Apps Canvas</span>
+    <span class="t-chip">Power Automate</span>
+    <span class="t-chip">Azure AD SSO</span>
+    <span class="t-chip">iOS · Android · Web</span>
+    <span class="t-chip">OData REST API</span>
+  </div>
+  <p class="t-date">LensKart &nbsp;·&nbsp; April 2026</p>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 2 — AGENDA
+════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="sh"><span class="sh-badge">Agenda</span><span class="sh-title">What We Will Cover</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="ag-intro">
+      This session covers LensKart's procurement approval context, the gap in today's D365 setup, Damco's proposed solution, and a 2-week POC delivery plan.
+      The goal is to align on approach and agree on next steps by the end of the call.
+    </div>
+    <div class="ag-grid">
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#dbeafe;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div><div class="ag-num">01 · Context</div><div class="ag-text">Understanding Your World</div><div class="ag-sub">LensKart scale, D365 multi-entity footprint, procurement team, and immediate ask</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#fee2e2;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div><div class="ag-num">02 · Problem</div><div class="ag-text">Where D365 Falls Short</div><div class="ag-sub">5 documented friction points in the current D365 approval experience</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#fff7ed;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>
+        </div>
+        <div><div class="ag-num">03 · D365 Mechanics</div><div class="ag-text">Workflow Engine and Lifecycle</div><div class="ag-sub">How D365 manages approvals: states, routing, SLA, and Merch vs Non-Merch flows</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#f0fdf4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <div><div class="ag-num">04 · Solution</div><div class="ag-text">The Wrapper App and Features</div><div class="ag-sub">Solution concept, 8 capabilities, and three end-to-end user journeys</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#f5f3ff;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1-4-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div><div class="ag-num">05 · Architecture</div><div class="ag-text">Technical Architecture</div><div class="ag-sub">6-layer stack, three data flow paths, authentication model, and technology stack</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#fef9c3;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div><div class="ag-num">06 · Delivery</div><div class="ag-text">POC Scope and 2-Week Plan</div><div class="ag-sub">Deliverables, timeline, prerequisites, and sign-off criteria</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#eff6ff;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div><div class="ag-num">07 · Credentials</div><div class="ag-text">Why Damco</div><div class="ag-sub">Team, retail domain references, and a directly comparable engagement outcome</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-icon" style="background:#fdf2f4;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94122C" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div><div class="ag-num">08 · Partnership</div><div class="ag-text">Roadmap and Next Steps</div><div class="ag-sub">POC to Assessment to Phase 2: the 18-month engagement path and immediate next steps</div></div>
+      </div>
+    </div>
+    <div class="ag-footer">
+      <div class="ag-footer-item"><div class="ag-footer-dot"></div>POC Entity: Singapore</div>
+      <div class="ag-footer-item"><div class="ag-footer-dot"></div>Timeline: 2-week delivery</div>
+      <div class="ag-footer-item"><div class="ag-footer-dot"></div>Users: 5–6 for POC</div>
+      <div class="ag-footer-item"><div class="ag-footer-dot"></div>Stack: Power Apps + Power Automate + D365 OData</div>
+      <div class="ag-footer-item"><div class="ag-footer-dot"></div>Sign-off: Hemang Modi + Udit Gupta</div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 3 — UNDERSTANDING YOUR WORLD
+════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="sh"><span class="sh-badge">Section 1</span><span class="sh-title">Understanding Your World</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="ctx-split">
+      <div class="ctx-hero">
+        <div class="ch-label">Client Profile</div>
+        <div class="ch-title">LensKart: Global Eyewear Retail at Scale</div>
+        <div class="ch-stat"><div class="ch-num">10,000+</div><div class="ch-slabel">Stores across India, UAE, Singapore &amp; 10+ markets</div></div>
+        <div class="ch-stat"><div class="ch-num">Multi-Entity</div><div class="ch-slabel">D365 F&amp;O live across multiple entities &amp; geographies</div></div>
+        <div class="ch-stat"><div class="ch-num">Active</div><div class="ch-slabel">Azure AD SSO already deployed. Foundation is ready.</div></div>
+      </div>
+      <div class="ctx-right">
+        <div class="ctx-card">
+          <div class="ctx-icon ci-blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <div><div class="ctx-label">ERP Landscape</div><div class="ctx-text">D365 F&amp;O is the core system of record. Multiple entities are live. Procurement workflows currently run through standard D365 approval configuration, which was implemented by Sonata Software.</div></div>
+        </div>
+        <div class="ctx-card">
+          <div class="ctx-icon ci-orange">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div><div class="ctx-label">Procurement Team</div><div class="ctx-text">Procurement approvals span Merchandise and Non-Merchandise categories. Approvers operate across geographies and time zones. Decisions on PRs and POs are time-sensitive; delays stall supply chain operations.</div></div>
+        </div>
+        <div class="ctx-card">
+          <div class="ctx-icon ci-green">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div><div class="ctx-label">Current Partner Transition</div><div class="ctx-text">LensKart is moving away from Sonata Software due to junior resourcing and limited retail domain experience. The search is for a partner who understands procurement operations deeply and can elevate the existing D365 setup.</div></div>
+        </div>
+        <div class="ctx-card">
+          <div class="ctx-icon ci-purple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div><div class="ctx-label">Immediate Ask</div><div class="ctx-text">A 2-week POC: mobile-friendly approval wrapper for Singapore entity, covering 5–6 users. PR and PO approval workflows, status tracking, and document upload. Sign-off by Hemang Modi and Udit Gupta.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 4 — THE PAIN
+════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="sh"><span class="sh-badge">Section 2</span><span class="sh-title">Where D365 Falls Short</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="pain-split">
+      <div class="pain-hero">
+        <div class="ph-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="ph-title">D365 Was Built for Desktops. Your Teams Aren't.</div>
+        <div class="ph-sub">The standard D365 approval interface creates real friction for teams that need to act fast, from anywhere, on any device. Five pain points, all documented and solvable.</div>
+      </div>
+      <div class="pain-cards">
+        <div class="pain-card">
+          <div class="pain-num">1</div>
+          <div><div class="pain-title">Desktop-First Design</div><div class="pain-desc">No mobile-optimised interface. Approvers must navigate full D365 UI on a phone: small touch targets, horizontal scrolling, multi-tab navigation. Approvals get deferred or skipped.</div></div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-num">2</div>
+          <div><div class="pain-title">No Unified Approval Dashboard</div><div class="pain-desc">Each approver must navigate to separate D365 screens for PR and PO approvals. There is no single view of all pending actions. Items get missed.</div></div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-num">3</div>
+          <div><div class="pain-title">Query and Hold Actions Are Buried</div><div class="pain-desc">The Query and Hold options are several clicks deep in the D365 approval UI. Approvers take the path of least resistance; they approve or reject, even when a query is the right action.</div></div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-num">4</div>
+          <div><div class="pain-title">Requestors Have No Visibility</div><div class="pain-desc">Once a PR or PO is submitted, the requestor has no real-time status. They must dig into D365, or chase approvers directly, to find out where their request stands.</div></div>
+        </div>
+        <div class="pain-card">
+          <div class="pain-num">5</div>
+          <div><div class="pain-title">Escalation Is Invisible</div><div class="pain-desc">If an approver is on leave or inactive, there is no automated escalation. The workflow stalls silently. No one is notified until someone raises the alarm manually.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 5 — D365 WORKFLOW ENGINE
+════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="sh"><span class="sh-badge">Section 2</span><span class="sh-title">How the D365 Workflow Engine Works</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="wfe-split">
+      <!-- Left: Capabilities -->
+      <div class="wfe-caps">
+        <div class="wfe-cap">
+          <div class="wfe-cap-title">Sequential Approval Steps</div>
+          <div class="wfe-cap-desc">Each step completes before the next begins. Approval order is configured in D365 and enforced automatically.</div>
+        </div>
+        <div class="wfe-cap">
+          <div class="wfe-cap-title">Conditional Routing</div>
+          <div class="wfe-cap-desc">Route by amount threshold, department, financial dimension, or legal entity. Different PRs follow different paths without manual intervention.</div>
+        </div>
+        <div class="wfe-cap">
+          <div class="wfe-cap-title">Time Limits per Step</div>
+          <div class="wfe-cap-desc">Each approval step has a configurable SLA in hours or days. When the limit is breached, D365 escalates to the next approver in hierarchy.</div>
+        </div>
+        <div class="wfe-cap">
+          <div class="wfe-cap-title">Completion Policies</div>
+          <div class="wfe-cap-desc">Single approver, majority vote, all approvers, or percentage-based. Configurable per step. D365 enforces, the app surfaces.</div>
+        </div>
+      </div>
+      <!-- Right: Workflow States -->
+      <div class="wfe-states">
+        <div class="wfe-slabel">Workflow States in D365 F&amp;O</div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-draft">Draft</span>
+          <span class="wfe-state-desc">PR created, not yet submitted. Requestor can still edit. No workflow instance active.</span>
+        </div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-sub">Submitted</span>
+          <span class="wfe-state-desc">PR entered the workflow. D365 identifies the first approver from the configured hierarchy.</span>
+        </div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-rev">In Review</span>
+          <span class="wfe-state-desc">Sitting with an approver. SLA timer is running. Action is pending.</span>
+        </div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-hold">On Hold</span>
+          <span class="wfe-state-desc">Approver has paused the step (budget pending, additional sign-off needed). SLA timer paused. App label.</span>
+        </div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-qry">Queried</span>
+          <span class="wfe-state-desc">Approver requested clarification. D365 triggers "Request Change" internally. PR returns to Draft. App label.</span>
+        </div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-app">Approved</span>
+          <span class="wfe-state-desc">All approval steps complete. PR is ready for PO conversion. D365 native state.</span>
+        </div>
+        <div class="wfe-state">
+          <span class="wfe-badge ws-rej">Rejected</span>
+          <span class="wfe-state-desc">Returned with mandatory rejection reason. PR is closed. Full audit trail preserved in D365.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 6 — PROCUREMENT LIFECYCLE
+════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="sh"><span class="sh-badge">Section 2.3</span><span class="sh-title">Your Procurement Lifecycle in D365</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="lc-flows">
+      <div class="lc-section">
+        <div class="lc-label" style="color:var(--m);">Merchandise Flow — Stocked Items (Inventory-backed)</div>
+        <div class="lc-row">
+          <div class="lc-box lc-start">Purchase Requisition (PR)</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-wf">PR Approval Workflow</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-po">Purchase Order (PO)</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-wf">PO Approval Workflow</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-grn">Goods Receipt / GRN</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-inv">Invoice Matching</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-match">3-Way Match</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-pay">Payment</div>
+        </div>
+      </div>
+      <div class="lc-section">
+        <div class="lc-label" style="color:#1e40af;">Non-Merchandise Flow — Services and Indirect Spend</div>
+        <div class="lc-row">
+          <div class="lc-box lc-po">Purchase Order (PO)</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-wf">PO Approval Workflow</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-svc">Service Confirmation</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-inv">Vendor Invoice</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-match">2-Way Match</div>
+          <div class="lc-arr">&#8594;</div>
+          <div class="lc-box lc-pay">Payment</div>
+        </div>
+      </div>
+      <div style="background:var(--b);border-radius:9px;padding:12px 18px;display:flex;gap:16px;align-items:flex-start;flex-shrink:0;">
+        <div style="width:3px;height:36px;background:var(--m);border-radius:2px;flex-shrink:0;margin-top:2px;"></div>
+        <div>
+          <div style="font-size:11.5px;font-weight:700;color:var(--m);margin-bottom:3px;">Where the wrapper app operates</div>
+          <div style="font-size:11px;color:var(--ts);line-height:1.6;">The app focuses on the two highlighted approval workflow steps in both flows: PR Approval and PO Approval. All other stages (GRN, Invoice, Payment) remain in D365 as-is. D365 remains the system of record throughout.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 7 — SOLUTION CONCEPT
+════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="sh"><span class="sh-badge">Section 4.1</span><span class="sh-title">The Solution: A Wrapper App</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="sc-intro">D365 is the single source of truth. The app reads from D365 and writes back to D365. Nothing changes inside D365. What changes is the experience on top: mobile-first, one-tap, real-time.</div>
+    <div class="arch-layout">
+      <div class="arch-layer al-u">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1-4-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <span class="al-label">Users</span>
+        <div class="al-items">
+          <span class="al-item">Requestors (status tracking)</span>
+          <span class="al-item">Approvers (mobile approval)</span>
+          <span class="al-item">Managers (escalation view)</span>
+          <span class="al-item">Azure AD SSO — already live at LensKart</span>
+        </div>
+      </div>
+      <div class="sc-conn"><div class="sc-conn-line"></div><span class="sc-conn-label">Azure AD OAuth 2.0 — HTTPS</span><div class="sc-conn-line"></div></div>
+      <div class="arch-layer al-a">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <span class="al-label">Power Apps</span>
+        <div class="al-items">
+          <span class="al-item">iOS App</span>
+          <span class="al-item">Android App</span>
+          <span class="al-item">Web Browser</span>
+          <span class="al-item">Approval Inbox</span>
+          <span class="al-item">PR/PO Detail View</span>
+          <span class="al-item">Status Tracker</span>
+          <span class="al-item">Document Viewer</span>
+        </div>
+      </div>
+      <div class="sc-conn"><div class="sc-conn-line"></div><span class="sc-conn-label">HTTP trigger (actions) + OData connector (reads)</span><div class="sc-conn-line"></div></div>
+      <div class="arch-layer al-f">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <span class="al-label">Power Automate</span>
+        <div class="al-items">
+          <span class="al-item">Event Listener Flow</span>
+          <span class="al-item">Action Handler Flow</span>
+          <span class="al-item">SLA Monitor Flow</span>
+          <span class="al-item">Document Handler Flow</span>
+          <span class="al-item">Escalation Handler Flow</span>
+        </div>
+      </div>
+      <div class="sc-conn"><div class="sc-conn-line"></div><span class="sc-conn-label">REST API + WorkflowWorkItem API + Business Events</span><div class="sc-conn-line"></div></div>
+      <div class="arch-layer al-d">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <span class="al-label">D365 F&amp;O</span>
+        <div class="al-items">
+          <span class="al-item">Workflow Engine (unchanged)</span>
+          <span class="al-item">Purchase Requisitions</span>
+          <span class="al-item">Purchase Orders</span>
+          <span class="al-item">Document Store</span>
+          <span class="al-item">Full Audit Trail</span>
+          <span class="al-item">RBAC + Entity Scope</span>
+        </div>
+      </div>
+      <div class="sc-conn"><div class="sc-conn-line"></div><span class="sc-conn-label">Business Events dispatch on every workflow state change</span><div class="sc-conn-line"></div></div>
+      <div class="arch-layer al-n">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <span class="al-label">Notifications</span>
+        <div class="al-items">
+          <span class="al-item">Microsoft Teams (adaptive card with action buttons)</span>
+          <span class="al-item">Email via Outlook</span>
+          <span class="al-item">In-App Push to mobile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 8 — KEY APP FEATURES
+════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="sh"><span class="sh-badge">Section 4.3</span><span class="sh-title">Key App Features</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="feat-title">Mobile-First UI</div>
+        <div class="feat-desc">Native iOS, Android, and responsive web. Built for one-thumb operation; approvals in under 10 seconds.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#f0fdf4;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <div class="feat-title">Unified Pending Actions</div>
+        <div class="feat-desc">All PRs and POs requiring action in one dashboard, sorted by SLA urgency, filterable by entity and category.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#f0f7ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="feat-title">One-Tap Actions</div>
+        <div class="feat-desc">Approve, Reject, Query, Hold, and Delegate. All accessible with a single tap, with inline comment entry.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#fef9c3;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="feat-title">Document Viewer</div>
+        <div class="feat-desc">View attachments (purchase orders, invoices, quotes) inline within the approval screen, without leaving the app.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2.2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+        <div class="feat-title">Real-Time Status Tracking</div>
+        <div class="feat-desc">Requestors see live status of their submitted PRs and POs: current approver, stage, and expected SLA.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#f0fdf4;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1-4-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="feat-title">Delegation &amp; Out-of-Office</div>
+        <div class="feat-desc">Approvers set delegation periods; the system automatically routes to the delegate and notifies all parties.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#fff0f0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="feat-title">SLA Monitoring</div>
+        <div class="feat-desc">Configurable SLA thresholds per document type. Auto-escalation to next approver if SLA is breached. Full audit trail.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#f1f5f9;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="feat-title">Audit Trail</div>
+        <div class="feat-desc">Every action (approval, rejection, query, delegation) is logged with timestamp, user, and comment for compliance.</div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 9 — USER JOURNEYS
+════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="sh"><span class="sh-badge">Section 4.2</span><span class="sh-title">User Journeys</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="journey-grid">
+      <!-- Journey A: Approver -->
+      <div class="j-card">
+        <div class="j-head">
+          <div class="j-badge jb-a">Journey A</div>
+          <div class="j-title">Approver</div>
+          <div class="j-sub">Receives, reviews, and acts on a PR or PO from any device</div>
+        </div>
+        <div class="j-steps">
+          <div class="jstep"><div class="jn jn-a">1</div><div class="jstep-text">Teams card or push notification arrives: PR awaiting approval</div></div>
+          <div class="jstep"><div class="jn jn-a">2</div><div class="jstep-text">Opens app via Face ID / Azure AD SSO</div></div>
+          <div class="jstep"><div class="jn jn-a">3</div><div class="jstep-text">Reviews PR: line items, amount, vendor, financial dimension</div></div>
+          <div class="jstep"><div class="jn jn-a">4</div><div class="jstep-text">Opens attached document inline — no D365 login required
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
+              <span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">Approve</span>
+              <span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;">Reject</span>
+              <span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;">Query</span>
+              <span style="font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;">Hold</span>
+            </div>
+          </div></div>
+          <div class="jstep"><div class="jn jn-a">5</div><div class="jstep-text">Taps action, enters optional comment, confirms</div></div>
+          <div class="jstep"><div class="jn jn-a">6</div><div class="jstep-text">D365 workflow advances. Requestor notified automatically.</div></div>
+        </div>
+        <div class="j-outcome">Under 60 seconds. Any device. D365 updated instantly.</div>
+      </div>
+      <!-- Journey B: Requestor -->
+      <div class="j-card">
+        <div class="j-head">
+          <div class="j-badge jb-b">Journey B</div>
+          <div class="j-title">Requestor</div>
+          <div class="j-sub">Submits a PR in D365 and tracks it to approval in the app</div>
+        </div>
+        <div class="j-steps">
+          <div class="jstep"><div class="jn jn-b">1</div><div class="jstep-text">Raises PR in D365 F&amp;O (standard, unchanged)</div></div>
+          <div class="jstep"><div class="jn jn-b">2</div><div class="jstep-text">Notification confirms: PR submitted, workflow started</div></div>
+          <div class="jstep"><div class="jn jn-b">3</div><div class="jstep-text">Opens app — views My Submissions with live status</div></div>
+          <div class="jstep"><div class="jn jn-b">4</div><div class="jstep-text">If Queried: sees approver comment, edits PR, re-submits</div></div>
+          <div class="jstep"><div class="jn jn-b">5</div><div class="jstep-text">Notified on approval or rejection with reason and approver name</div></div>
+          <div class="jstep"><div class="jn jn-b">6</div><div class="jstep-text">Approved PR visible as converted PO with downstream status</div></div>
+        </div>
+        <div class="j-outcome">Full visibility. No D365 navigation. No chasing approvers.</div>
+      </div>
+      <!-- Journey C: SLA Escalation -->
+      <div class="j-card">
+        <div class="j-head">
+          <div class="j-badge jb-c">Journey C</div>
+          <div class="j-title">SLA Escalation</div>
+          <div class="j-sub">Automatic escalation when an approver does not act in time</div>
+        </div>
+        <div class="j-steps">
+          <div class="jstep"><div class="jn jn-c">1</div><div class="jstep-text">PR submitted; SLA timer starts per configured threshold</div></div>
+          <div class="jstep"><div class="jn jn-c">2</div><div class="jstep-text">At 75% of SLA: reminder notification to approver</div></div>
+          <div class="jstep"><div class="jn jn-c">3</div><div class="jstep-text">At 100%, no action: SLA Breach Event fires in D365</div></div>
+          <div class="jstep"><div class="jn jn-c">4</div><div class="jstep-text">Escalation Handler reassigns to next approver in hierarchy</div></div>
+          <div class="jstep"><div class="jn jn-c">5</div><div class="jstep-text">Original approver's manager and requestor both notified</div></div>
+          <div class="jstep"><div class="jn jn-c">6</div><div class="jstep-text">All events logged to audit trail with timestamp</div></div>
+        </div>
+        <div class="j-outcome">No approval stalls silently. Every breach is visible and actioned.</div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 8 — SOLUTION ARCHITECTURE
+════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="sh"><span class="sh-badge">Section 5.1</span><span class="sh-title">Solution Architecture</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="arch-layout">
+      <div class="arch-layer al-u">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 1-4-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <span class="al-label">Users</span>
+        <div class="al-items">
+          <span class="al-item">Approvers (mobile + desktop)</span>
+          <span class="al-item">Requestors (status tracking)</span>
+          <span class="al-item">SLA Managers (escalation oversight)</span>
+          <span class="al-item">Azure AD SSO (already live)</span>
+        </div>
+      </div>
+      <div class="al-conn"></div>
+      <div class="arch-layer al-a">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <span class="al-label">Power Apps</span>
+        <div class="al-items">
+          <span class="al-item">Canvas App: iOS</span>
+          <span class="al-item">Canvas App: Android</span>
+          <span class="al-item">Canvas App: Web</span>
+          <span class="al-item">Approver Dashboard</span>
+          <span class="al-item">Requestor Status View</span>
+          <span class="al-item">Document Viewer</span>
+        </div>
+      </div>
+      <div class="al-conn"></div>
+      <div class="arch-layer al-f">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <span class="al-label">Power Automate</span>
+        <div class="al-items">
+          <span class="al-item">Event Listener Flow</span>
+          <span class="al-item">Action Handler Flow</span>
+          <span class="al-item">SLA Monitor Flow</span>
+          <span class="al-item">Document Handler Flow</span>
+          <span class="al-item">Escalation Handler Flow</span>
+        </div>
+      </div>
+      <div class="al-conn"></div>
+      <div class="arch-layer al-p">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <span class="al-label">D365 API Layer</span>
+        <div class="al-items">
+          <span class="al-item">OData REST API v4, Read Path</span>
+          <span class="al-item">WorkflowWorkItem API, Action Path</span>
+          <span class="al-item">Business Events, Event Path</span>
+          <span class="al-item">Document Management API</span>
+        </div>
+      </div>
+      <div class="al-conn"></div>
+      <div class="arch-layer al-d">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <span class="al-label">D365 F&amp;O</span>
+        <div class="al-items">
+          <span class="al-item">Purchase Requisitions</span>
+          <span class="al-item">Purchase Orders</span>
+          <span class="al-item">Workflow Engine</span>
+          <span class="al-item">Financial Dimensions</span>
+          <span class="al-item">Vendor Master</span>
+        </div>
+      </div>
+      <div class="al-conn"></div>
+      <div class="arch-layer al-n">
+        <div class="al-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <span class="al-label">Notifications</span>
+        <div class="al-items">
+          <span class="al-item">Microsoft Teams</span>
+          <span class="al-item">Email (Outlook)</span>
+          <span class="al-item">Push Notifications</span>
+          <span class="al-item">SLA Alerts</span>
+          <span class="al-item">Escalation Alerts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 9 — DATA FLOW PATHS
+════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="sh"><span class="sh-badge">Section 5.2</span><span class="sh-title">Data Flow Paths</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="df-grid">
+      <!-- Path A: Read / OData -->
+      <div class="df-card df-a">
+        <div class="df-head">
+          <div class="df-badge">Path A: Read</div>
+          <div class="df-title">OData REST API</div>
+          <div class="df-sub">Fetching pending items and document details</div>
+        </div>
+        <div class="df-body">
+          <div class="df-step"><div class="dfsn">1</div><div class="df-step-content"><div class="df-step-text">User opens the app, authenticated via Azure AD OAuth 2.0</div></div></div>
+          <div class="df-step"><div class="dfsn">2</div><div class="df-step-content"><div class="df-step-text">Power Apps queries D365 for pending workflow items</div><div class="df-step-code">GET /data/WorkflowWorkItems?$filter=Status eq 'Pending'</div></div></div>
+          <div class="df-step"><div class="dfsn">3</div><div class="df-step-content"><div class="df-step-text">D365 OData returns PR and PO headers with financial details</div><div class="df-step-code">GET /data/PurchaseRequisitionHeaders</div></div></div>
+          <div class="df-step"><div class="dfsn">4</div><div class="df-step-content"><div class="df-step-text">App renders the Pending Actions dashboard, sorted by SLA urgency</div></div></div>
+          <div class="df-step"><div class="dfsn">5</div><div class="df-step-content"><div class="df-step-text">Document attachments fetched on-demand via Document Management API</div></div></div>
+        </div>
+      </div>
+      <!-- Path B: Action / Power Automate -->
+      <div class="df-card df-b">
+        <div class="df-head">
+          <div class="df-badge">Path B: Action</div>
+          <div class="df-title">Workflow Action API</div>
+          <div class="df-sub">Approving, rejecting, or querying a document</div>
+        </div>
+        <div class="df-body">
+          <div class="df-step"><div class="dfsn">1</div><div class="df-step-content"><div class="df-step-text">Approver taps Approve (or Reject / Query / Hold) with optional comment</div></div></div>
+          <div class="df-step"><div class="dfsn">2</div><div class="df-step-content"><div class="df-step-text">Power Apps calls Power Automate Action Handler flow via HTTP connector</div></div></div>
+          <div class="df-step"><div class="dfsn">3</div><div class="df-step-content"><div class="df-step-text">Action Handler POSTs to D365 WorkflowWorkItem-complete action</div><div class="df-step-code">POST /data/WorkflowWorkItems('{id}')/Microsoft.Dynamics.DataEntities.WorkflowWorkItem-complete</div></div></div>
+          <div class="df-step"><div class="dfsn">4</div><div class="df-step-content"><div class="df-step-text">D365 updates the workflow state, advancing to next stage or closing</div></div></div>
+          <div class="df-step"><div class="dfsn">5</div><div class="df-step-content"><div class="df-step-text">Confirmation returned to Power Apps. Dashboard refreshes immediately.</div></div></div>
+        </div>
+      </div>
+      <!-- Path C: Event / Business Events -->
+      <div class="df-card df-c">
+        <div class="df-head">
+          <div class="df-badge">Path C: Event</div>
+          <div class="df-title">Business Events</div>
+          <div class="df-sub">Real-time notifications triggered by D365 state changes</div>
+        </div>
+        <div class="df-body">
+          <div class="df-step"><div class="dfsn">1</div><div class="df-step-content"><div class="df-step-text">A workflow state change occurs in D365: new item assigned, SLA threshold reached, or escalation triggered</div></div></div>
+          <div class="df-step"><div class="dfsn">2</div><div class="df-step-content"><div class="df-step-text">D365 fires a Business Event, pushed to the configured endpoint</div><div class="df-step-code">WorkflowWorkItemCreated / SLABreach event</div></div></div>
+          <div class="df-step"><div class="dfsn">3</div><div class="df-step-content"><div class="df-step-text">Power Automate Event Listener flow receives the event payload</div></div></div>
+          <div class="df-step"><div class="dfsn">4</div><div class="df-step-content"><div class="df-step-text">Flow routes notification (Teams, push, or email) to the correct recipient</div></div></div>
+          <div class="df-step"><div class="dfsn">5</div><div class="df-step-content"><div class="df-step-text">For SLA breaches: Escalation Handler fires, reassigns document and logs audit entry</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 12 — SECURITY & TECHNOLOGY STACK
+════════════════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="sh"><span class="sh-badge">Section 5.3</span><span class="sh-title">Security and Technology Stack</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="sec-layout">
+      <!-- Left: Auth Model -->
+      <div class="auth-card">
+        <div class="sec-label">Authentication and Data Security Model</div>
+        <div class="auth-step">
+          <div class="auth-n">1</div>
+          <div class="auth-info">
+            <div class="auth-title">Azure AD Single Sign-On</div>
+            <div class="auth-desc">Users log in with their existing LensKart credentials. No new identity setup. Azure AD is already live at LensKart.</div>
+          </div>
+        </div>
+        <div class="auth-step">
+          <div class="auth-n">2</div>
+          <div class="auth-info">
+            <div class="auth-title">OAuth 2.0 Bearer Token</div>
+            <div class="auth-desc">Azure AD issues a per-user Bearer token. Token is passed on every API call. Power Platform refreshes tokens automatically.</div>
+          </div>
+        </div>
+        <div class="auth-step">
+          <div class="auth-n">3</div>
+          <div class="auth-info">
+            <div class="auth-title">D365 RBAC Enforcement</div>
+            <div class="auth-desc">D365 validates the token on every call and applies row-level and column-level security. Users see only what their D365 role permits.</div>
+          </div>
+        </div>
+        <div class="auth-step">
+          <div class="auth-n">4</div>
+          <div class="auth-info">
+            <div class="auth-title">Singapore Entity Scope</div>
+            <div class="auth-desc">OData queries are scoped to the Singapore legal entity for the POC. Cross-entity data does not bleed across. Controlled via D365 cross-company access settings.</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:var(--b);border-radius:7px;padding:9px 14px;">
+          <div style="font-size:10px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Role-Based App Views</div>
+          <div class="rbac-row" style="border-bottom:1px solid var(--br);padding:5px 0;">
+            <span class="rbac-role">Requestor</span>
+            <span class="rbac-view">My Submissions: PR/PO status, approver identity, timeline</span>
+          </div>
+          <div class="rbac-row" style="border-bottom:1px solid var(--br);padding:5px 0;">
+            <span class="rbac-role">Approver</span>
+            <span class="rbac-view">Approval Inbox: pending items sorted by SLA urgency</span>
+          </div>
+          <div class="rbac-row" style="padding:5px 0;">
+            <span class="rbac-role">Manager</span>
+            <span class="rbac-view">Team Overview: escalations, SLA breaches, pending by approver</span>
+          </div>
+        </div>
+      </div>
+      <!-- Right: Tech Stack -->
+      <div class="sec-right">
+        <div class="ts-card">
+          <div class="sec-label">Technology Stack</div>
+          <div class="ts-row"><span class="ts-layer">App</span><span class="ts-tech">Power Apps Canvas (iOS, Android, Web)</span></div>
+          <div class="ts-row"><span class="ts-layer">Orchestration</span><span class="ts-tech">Power Automate — 5 flows</span></div>
+          <div class="ts-row"><span class="ts-layer">Read API</span><span class="ts-tech">D365 OData REST v4</span></div>
+          <div class="ts-row"><span class="ts-layer">Write API</span><span class="ts-tech">D365 WorkflowWorkItem API</span></div>
+          <div class="ts-row"><span class="ts-layer">Event API</span><span class="ts-tech">D365 Business Events</span></div>
+          <div class="ts-row"><span class="ts-layer">Identity</span><span class="ts-tech">Azure AD / OAuth 2.0</span></div>
+          <div class="ts-row"><span class="ts-layer">Notifications</span><span class="ts-tech">Teams + Outlook + In-App Push</span></div>
+          <div class="ts-row"><span class="ts-layer">Document Store</span><span class="ts-tech">D365 native document management</span></div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 8px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);">
+          <div class="sec-label">No New Infrastructure</div>
+          <div style="font-size:11.5px;color:var(--ts);line-height:1.7;">Power Apps and Power Automate run on the Microsoft Power Platform — already available under your Microsoft 365 license. No new servers, no new software procurement, no infrastructure change. The only setup required is a one-time Azure AD app registration and Business Event endpoint configuration in D365 — a standard admin task that takes a few hours.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 10 — POC SCOPE
+════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="sh"><span class="sh-badge">Section 6</span><span class="sh-title">POC Scope &amp; Delivery Plan</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="poc-grid">
+      <div class="poc-card">
+        <div class="poc-sec-title">Deliverables in Scope</div>
+        <div class="poc-item"><div class="poc-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="poc-text">PR Approval Workflow: Approve, Reject, Query, Hold with notifications</div></div>
+        <div class="poc-item"><div class="poc-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="poc-text">PO Approval Workflow, full action set with comment and audit trail</div></div>
+        <div class="poc-item"><div class="poc-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="poc-text">Requestor Status Tracking: real-time view of submitted items</div></div>
+        <div class="poc-item"><div class="poc-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="poc-text">Document Upload &amp; Inline Viewer at each workflow stage</div></div>
+        <div class="poc-item"><div class="poc-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="poc-text">Azure AD SSO integration (leveraging existing LensKart AD setup)</div></div>
+        <div class="poc-item"><div class="poc-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="poc-text">Teams and Email notifications for approval assignments and outcomes</div></div>
+        <div style="margin-top:12px;background:var(--b);border-radius:7px;padding:9px 12px;">
+          <div style="font-size:10px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Scope Boundary</div>
+          <div style="font-size:11px;color:var(--ts);line-height:1.6;">Singapore entity only. 5–6 named users. Sandbox environment. No integration with entities outside Singapore in this phase.</div>
+        </div>
+      </div>
+      <div class="tl-card">
+        <div class="poc-sec-title">2-Week Delivery Timeline</div>
+        <div class="tl-week">
+          <div class="tl-w-label">Week 1: Build</div>
+          <div class="tl-task">Environment setup and D365 sandbox connectivity</div>
+          <div class="tl-task">Azure AD app registration and OAuth configuration</div>
+          <div class="tl-task">Power Apps canvas app scaffold (iOS + web)</div>
+          <div class="tl-task">PR Approval workflow, full action set</div>
+          <div class="tl-task">Event Listener and Action Handler flows</div>
+        </div>
+        <div class="tl-week">
+          <div class="tl-w-label">Week 2: Complete &amp; Demo</div>
+          <div class="tl-task">PO Approval workflow and Document Viewer</div>
+          <div class="tl-task">Requestor status tracking dashboard</div>
+          <div class="tl-task">SLA Monitor and notification flows</div>
+          <div class="tl-task">User acceptance testing with 5–6 LensKart users</div>
+          <div class="tl-task">Functional demo and sign-off session</div>
+        </div>
+        <div style="margin-top:8px;background:#f0fdf4;border-radius:7px;padding:9px 12px;border:1px solid #bbf7d0;">
+          <div style="font-size:10.5px;color:#15803d;font-weight:600;">Prerequisite: D365 sandbox access + 5–6 test user accounts within 48 hours of NDA sign.</div>
+        </div>
+      </div>
+      <div class="poc-so">
+        <div class="so-title">Sign-Off Criteria</div>
+        <div class="so-sub">POC is complete when both approvers confirm the demo meets the brief</div>
+        <div class="so-person">
+          <div class="so-person-role">Hemang Modi</div>
+          <div class="so-person-name">Product Leader, functional completeness sign-off</div>
+        </div>
+        <div class="so-person">
+          <div class="so-person-role">Udit Gupta</div>
+          <div class="so-person-name">Co-sign-off, solution alignment and technical review</div>
+        </div>
+        <div class="so-crit-title">Demo Acceptance Criteria</div>
+        <div class="so-crit">
+          All 4 approval actions work on iOS and web<br>
+          Requestor view shows real-time status<br>
+          Document upload and viewer functional<br>
+          Notifications delivered via Teams and email<br>
+          Actions reflect correctly in D365 sandbox
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 11 — WHY DAMCO
+════════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="sh"><span class="sh-badge">Section 7</span><span class="sh-title">Why Damco</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="damco-grid">
+      <div class="damco-left">
+        <div class="stat-card"><div class="stat-num">20+</div><div class="stat-label">Years of D365 F&amp;O implementation experience</div></div>
+        <div class="stat-card"><div class="stat-num">50+</div><div class="stat-label">Enterprise clients across retail, FMCG, and distribution</div></div>
+        <div class="stat-card"><div class="stat-num">300+</div><div class="stat-label">D365 and Power Platform consultants globally</div></div>
+        <div class="stat-card"><div class="stat-num">95%</div><div class="stat-label">On-time delivery across D365 implementation projects</div></div>
+      </div>
+      <div class="damco-right">
+        <div class="team-card">
+          <div class="team-title">Team for This Engagement</div>
+          <div class="team-member"><div class="team-av">RA</div><div><div class="team-name">Lead D365 Architect</div><div class="team-role">12 years D365 F&amp;O, procurement and supply chain specialisation</div></div></div>
+          <div class="team-member"><div class="team-av">SK</div><div><div class="team-name">Senior D365 Consultant</div><div class="team-role">Retail domain: workflow configuration, financial dimensions, RBAC</div></div></div>
+          <div class="team-member"><div class="team-av">PV</div><div><div class="team-name">Power Platform Developer</div><div class="team-role">Power Apps Canvas and Power Automate, 8 production implementations</div></div></div>
+          <div class="team-member"><div class="team-av">AK</div><div><div class="team-name">QA Lead</div><div class="team-role">D365 integration testing, UAT coordination, sign-off management</div></div></div>
+        </div>
+        <div class="clients-card">
+          <div class="clients-title">Retail &amp; E-Commerce References</div>
+          <span class="client-chip">Reliance Retail</span>
+          <span class="client-chip">Nykaa</span>
+          <span class="client-chip">Decathlon India</span>
+          <span class="client-chip">ALDO Group</span>
+          <span class="client-chip">Landmark Group</span>
+          <span class="client-chip">Shoppers Stop</span>
+          <span class="client-chip">Lifestyle International</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SLIDE 15 — PARTNERSHIP ROADMAP + NEXT STEPS
+════════════════════════════════════════ -->
+<div class="slide" id="s15">
+  <div class="sh"><span class="sh-badge">Sections 8–10</span><span class="sh-title">Partnership Roadmap and Next Steps</span><div class="sh-line"></div></div>
+  <div class="sb">
+    <div class="prm-layout">
+      <!-- Engagement Timeline -->
+      <div class="prm-timeline">
+        <div class="prm-col prm-now">
+          <div class="prm-when">Now</div>
+          <div class="prm-phase">POC: 2-Week Delivery</div>
+          <div class="prm-line">PR and PO approval workflows</div>
+          <div class="prm-line">Singapore entity, 5-6 users</div>
+          <div class="prm-line">Mobile (iOS + Android) + Web</div>
+          <div class="prm-line">Functional demo: Hemang + Udit sign-off</div>
+          <div class="prm-line">Lightweight D365 observational review included</div>
+        </div>
+        <div class="prm-col prm-adv">
+          <div class="prm-when">Month 1–2</div>
+          <div class="prm-phase">D365 Partnership Assessment</div>
+          <div class="prm-line">Workflow configuration review</div>
+          <div class="prm-line">Process efficiency and manual workaround audit</div>
+          <div class="prm-line">Performance and security model review</div>
+          <div class="prm-line">Integration health (multi-ERP to D365)</div>
+          <div class="prm-line">AI readiness assessment</div>
+          <div class="prm-line">Delivers: D365 Improvement Roadmap</div>
+        </div>
+        <div class="prm-col prm-enh">
+          <div class="prm-when">Month 3–12+</div>
+          <div class="prm-phase">Enhancement Partnership</div>
+          <div class="prm-line">Phase 2A: Procurement expansion (all entities)</div>
+          <div class="prm-line">Phase 2B: Data lake + Power BI dashboards</div>
+          <div class="prm-line">Phase 2C: Copilot and custom AI on D365</div>
+          <div class="prm-line">Managed Services / AMC: $8–15K/month</div>
+          <div class="prm-line">2-year opportunity: $500K–1M+</div>
+        </div>
+      </div>
+      <!-- Next Steps -->
+      <div class="prm-ns-row">
+        <div class="prm-ns-item">
+          <div class="prm-ns-n">1</div>
+          <div class="prm-ns-title">Agree Approach</div>
+          <div class="prm-ns-sub">Align on POC scope and approach today</div>
+        </div>
+        <div class="prm-ns-item">
+          <div class="prm-ns-n">2</div>
+          <div class="prm-ns-title">Commercial Proposal</div>
+          <div class="prm-ns-sub">Damco sends team + cost within hours post-call</div>
+        </div>
+        <div class="prm-ns-item">
+          <div class="prm-ns-n">3</div>
+          <div class="prm-ns-title">Sign NDA</div>
+          <div class="prm-ns-sub">NDA sent within 24 hours of call</div>
+        </div>
+        <div class="prm-ns-item">
+          <div class="prm-ns-n">4</div>
+          <div class="prm-ns-title">Sandbox Access</div>
+          <div class="prm-ns-sub">LensKart IT: 5-6 test accounts within 48 hours of NDA</div>
+        </div>
+        <div class="prm-ns-item">
+          <div class="prm-ns-n">5</div>
+          <div class="prm-ns-title">POC Kickoff</div>
+          <div class="prm-ns-sub">Day 1 call: environment, data, cadence. Day 14: demo.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span class="sf-brand"><b>Damco</b> Solutions</span><span class="sf-conf">Confidential | LensKart</span><span style="font-size:10px;color:#d1d5db;">Damco Solutions · April 2026</span></div>
+</div>
+
+
+</div><!-- end #deck -->
+
+<!-- ── Navigation ── -->
+<div id="nav">
+  <button id="prev" onclick="go(-1)">&#8592;</button>
+  <span id="counter">1 / 15</span>
+  <button id="next" onclick="go(1)">&#8594;</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+function show(n) {
+  slides[cur].classList.remove('active');
+  cur = (n + total) % total;
+  slides[cur].classList.add('active');
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+}
+
+function go(dir) { show(cur + dir); }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') show(0);
+  if (e.key === 'End') show(total - 1);
+});
+
+// Touch swipe
+let tx = 0;
+document.addEventListener('touchstart', function(e) { tx = e.touches[0].clientX; }, {passive:true});
+document.addEventListener('touchend', function(e) {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+}, {passive:true});
+</script>
+</body>
+</html>
